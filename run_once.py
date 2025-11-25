@@ -5,7 +5,7 @@ Accepts one prompt via command line and returns the agent's response.
 import asyncio
 import sys
 from datetime import date
-from google.adk.agents import types
+from google.genai import types
 from google.adk.runners import Runner
 from google.adk.memory import InMemoryMemoryService
 
