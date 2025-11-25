@@ -12,3 +12,4 @@ my_agent_data.db
 chroma_db_research_papers_test/
 .pytest_cache/
 agent_output.txt
+cold_emails.json
