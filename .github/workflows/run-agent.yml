@@ -30,8 +30,8 @@ jobs:
 
       - name: Run the agent with prompt
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          GOOGLE_ENVIRON_SECRET: ${{ secrets.GOOGLE_ENVIRON_SECRET }}
           USER_PROMPT: ${{ github.event.inputs.prompt }}
         run: |
           python run_once.py "$USER_PROMPT"
