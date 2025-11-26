@@ -1,128 +1,18 @@
 {
   "emails": [
     {
-      "id": "352ffc18",
-      "recipient_name": "",
-      "recipient_email": "Xaymara.Serrano@noaa.gov",
-      "institution": "NOAA Field Office, West Palm Beach Florida",
-      "subject": "",
-      "purpose": "",
-      "date_sent": "",
-      "status": "sent",
-      "response_date": null,
-      "follow_up_dates": [],
-      "notes": "",
-      "last_updated": "2025-11-25T15:24:38.675296"
-    },
-    {
-      "id": "ae5ce732",
-      "recipient_name": "",
-      "recipient_email": "dinorah.chacin@noaa.gov",
-      "institution": "NOAA Field Office, West Palm Beach Florida",
-      "subject": "",
-      "purpose": "",
-      "date_sent": "",
-      "status": "sent",
-      "response_date": null,
-      "follow_up_dates": [],
-      "notes": "",
-      "last_updated": "2025-11-25T15:24:38.677493"
-    },
-    {
-      "id": "8a145315",
-      "recipient_name": "",
-      "recipient_email": "jocelyn.karazsia@noaa.gov",
-      "institution": "NOAA Field Office, West Palm Beach Florida",
-      "subject": "",
-      "purpose": "",
-      "date_sent": "",
-      "status": "sent",
-      "response_date": null,
-      "follow_up_dates": [],
-      "notes": "",
-      "last_updated": "2025-11-25T15:24:38.679670"
-    },
-    {
-      "id": "72ec09f6",
-      "recipient_name": "",
-      "recipient_email": "lesk@bu.edu",
-      "institution": "Boston University",
-      "subject": "",
-      "purpose": "",
-      "date_sent": "",
-      "status": "sent",
-      "response_date": null,
-      "follow_up_dates": [],
-      "notes": "",
-      "last_updated": "2025-11-25T15:24:38.680937"
-    },
-    {
-      "id": "e1021810",
-      "recipient_name": "Dr. Serrano",
-      "recipient_email": "Xaymara.Serrano@noaa.gov",
-      "institution": "NOAA field office, West Palm Beach Florida",
-      "subject": "",
-      "purpose": "",
-      "date_sent": "2025-11-25",
-      "status": "sent",
-      "response_date": null,
-      "follow_up_dates": [],
-      "notes": "",
-      "last_updated": "2025-11-25T20:38:29.049556"
-    },
-    {
-      "id": "bbfa609e",
-      "recipient_name": "Dr. Chacin",
-      "recipient_email": "dinorah.chacin@noaa.gov",
-      "institution": "NOAA field office, West Palm Beach Florida",
-      "subject": "",
-      "purpose": "",
-      "date_sent": "2025-11-25",
-      "status": "sent",
-      "response_date": null,
-      "follow_up_dates": [],
-      "notes": "",
-      "last_updated": "2025-11-25T20:38:29.051058"
-    },
-    {
-      "id": "9b17b8ab",
-      "recipient_name": "Dr. Karazsia",
-      "recipient_email": "jocelyn.karazsia@noaa.gov",
-      "institution": "NOAA field office, West Palm Beach Florida",
-      "subject": "",
-      "purpose": "",
-      "date_sent": "2025-11-25",
-      "status": "sent",
-      "response_date": null,
-      "follow_up_dates": [],
-      "notes": "",
-      "last_updated": "2025-11-25T20:38:29.052461"
-    },
-    {
-      "id": "626f5094",
-      "recipient_name": "Dr. Kaufman",
-      "recipient_email": "lesk@bu.edu",
-      "institution": "Boston University",
-      "subject": "",
-      "purpose": "",
-      "date_sent": "2025-11-25",
-      "status": "sent",
-      "response_date": null,
-      "follow_up_dates": [],
-      "notes": "",
-      "last_updated": "2025-11-25T20:38:29.053962"
-    },
-    {
       "id": "227098be",
       "recipient_name": "Dr. Serrano",
       "recipient_email": "Xaymara.Serrano@noaa.gov",
       "institution": "NOAA field office in West Palm Beach Florida",
       "subject": "",
       "purpose": "",
-      "date_sent": "2025-11-26",
+      "date_sent": "2025-11-25",
       "status": "sent",
       "response_date": null,
-      "follow_up_dates": [],
+      "follow_up_dates": [
+        "2025-11-25"
+      ],
       "notes": "",
       "last_updated": "2025-11-26T15:26:07.901173"
     },
@@ -133,10 +23,12 @@
       "institution": "NOAA field office in West Palm Beach Florida",
       "subject": "",
       "purpose": "",
-      "date_sent": "2025-11-26",
+      "date_sent": "2025-11-25",
       "status": "sent",
       "response_date": null,
-      "follow_up_dates": [],
+      "follow_up_dates": [
+        "2025-11-25"
+      ],
       "notes": "",
       "last_updated": "2025-11-26T15:26:07.902722"
     },
@@ -147,10 +39,12 @@
       "institution": "NOAA field office in West Palm Beach Florida",
       "subject": "",
       "purpose": "",
-      "date_sent": "2025-11-26",
+      "date_sent": "2025-11-25",
       "status": "sent",
       "response_date": null,
-      "follow_up_dates": [],
+      "follow_up_dates": [
+        "2025-11-25"
+      ],
       "notes": "",
       "last_updated": "2025-11-26T15:26:07.903224"
     },
@@ -161,10 +55,12 @@
       "institution": "Boston University",
       "subject": "",
       "purpose": "",
-      "date_sent": "2025-11-26",
+      "date_sent": "2025-11-25",
       "status": "sent",
       "response_date": null,
-      "follow_up_dates": [],
+      "follow_up_dates": [
+        "2025-11-25"
+      ],
       "notes": "",
       "last_updated": "2025-11-26T15:26:07.904228"
     }
