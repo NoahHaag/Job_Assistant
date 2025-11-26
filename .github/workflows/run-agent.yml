@@ -49,7 +49,9 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "🤖 Agent: Update tracker data"
-            git push
+            # Pull latest changes first to avoid conflicts
+            git pull --rebase origin main
+            git push origin main
           fi
 
       - name: Upload output as artifact
