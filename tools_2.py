@@ -390,11 +390,225 @@ def delete_job_application(application_id: str = None, company: str = None):
     return f"✅ Deleted application: {identifier}"
 
 
+# ---------------------------------------------------------------------
+# Cold Email Tracker - Track outreach to professors/researchers
+# ---------------------------------------------------------------------
+
+COLD_EMAILS_FILE = "cold_emails.json"
+
+def _load_cold_emails():
+    """Load cold emails from JSON file. Create file if it doesn't exist."""
+    if not os.path.exists(COLD_EMAILS_FILE):
+        initial_data = {"emails": []}
+        with open(COLD_EMAILS_FILE, "w", encoding="utf-8") as f:
+            json.dump(initial_data, f, indent=2)
+        return initial_data
+    
+    try:
+        with open(COLD_EMAILS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except json.JSONDecodeError:
+        print("[WARNING] Corrupted cold_emails.json, creating backup.")
+        if os.path.exists(COLD_EMAILS_FILE):
+            backup_name = f"cold_emails_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            os.rename(COLD_EMAILS_FILE, backup_name)
+        return {"emails": []}
+
+
+def _save_cold_emails(data):
+    """Save cold emails to JSON file."""
+    with open(COLD_EMAILS_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+def add_cold_email(
+    recipient_name: str,
+    recipient_email: str,
+    institution: str = "",
+    subject: str = "",
+    purpose: str = "",
+    date_sent: str = None,
+    notes: str = ""
+):
+    """
+    Add a new cold email to the tracker.
+    
+    Args:
+        recipient_name (str): Name of the person you emailed
+        recipient_email (str): Their email address
+        institution (str, optional): University or institution
+        subject (str, optional): Email subject line
+        purpose (str, optional): Purpose (e.g., "PhD opportunity")
+        date_sent (str, optional): Date sent (YYYY-MM-DD). Defaults to today.
+        notes (str, optional): Additional notes
+    
+    Returns:
+        str: Confirmation message with email ID
+    """
+    if date_sent is None:
+        date_sent = date.today().isoformat()
+    
+    data = _load_cold_emails()
+    email_id = str(uuid.uuid4())[:8]
+    
+    cold_email = {
+        "id": email_id,
+        "recipient_name": recipient_name,
+        "recipient_email": recipient_email,
+        "institution": institution,
+        "subject": subject,
+        "purpose": purpose,
+        "date_sent": date_sent,
+        "status": "sent",
+        "response_date": None,
+        "follow_up_dates": [],
+        "notes": notes,
+        "last_updated": datetime.now().isoformat()
+    }
+    
+    data["emails"].append(cold_email)
+    _save_cold_emails(data)
+    
+    return f"✅ Cold email tracked!\n\nID: {email_id}\nRecipient: {recipient_name} ({recipient_email})\nInstitution: {institution or 'N/A'}\nDate: {date_sent}"
+
+
+def update_cold_email(
+    email_id: str = None,
+    recipient_email: str = None,
+    status: str = None,
+    response_date: str = None,
+    follow_up_sent: bool = False,
+    notes: str = None
+):
+    """
+    Update an existing cold email record.
+    
+    Args:
+        email_id (str, optional): Email ID to update
+        recipient_email (str, optional): Recipient's email (if no email_id)
+        status (str, optional): New status (sent, responded, no_response, follow_up_sent)
+        response_date (str, optional): Date they responded (YYYY-MM-DD)
+        follow_up_sent (bool): If True, adds today to follow_up_dates
+        notes (str, optional): Additional notes to append
+    
+    Returns:
+        str: Confirmation message
+    """
+    if not email_id and not recipient_email:
+        return "Error: Must provide either email_id or recipient_email"
+    
+    valid_statuses = ["sent", "responded", "no_response", "follow_up_sent"]
+    if status and status not in valid_statuses:
+        return f"Error: Invalid status. Must be one of: {', '.join(valid_statuses)}"
+    
+    data = _load_cold_emails()
+    
+    # Find email
+    email_to_update = None
+    if email_id:
+        for email in data["emails"]:
+            if email["id"] == email_id:
+                email_to_update = email
+                break
+    elif recipient_email:
+        matching_emails = [e for e in data["emails"] if e["recipient_email"].lower() == recipient_email.lower()]
+        if matching_emails:
+            email_to_update = max(matching_emails, key=lambda x: x["last_updated"])
+    
+    if not email_to_update:
+        return "Error: No email found"
+    
+    # Update fields
+    if status:
+        email_to_update["status"] = status
+    if response_date:
+        email_to_update["response_date"] = response_date
+        if not status:
+            email_to_update["status"] = "responded"
+    if follow_up_sent:
+        email_to_update["follow_up_dates"].append(date.today().isoformat())
+        if not status:
+            email_to_update["status"] = "follow_up_sent"
+    if notes:
+        if email_to_update["notes"]:
+            email_to_update["notes"] += f"\n[{datetime.now().strftime('%Y-%m-%d')}] {notes}"
+        else:
+            email_to_update["notes"] = notes
+    
+    email_to_update["last_updated"] = datetime.now().isoformat()
+    _save_cold_emails(data)
+    
+    return f"✅ Updated: {email_to_update['recipient_name']} ({email_to_update['recipient_email']})\nStatus: {email_to_update['status']}"
+
+
+def query_cold_emails(
+    status: str = None,
+    institution: str = None,
+    recipient_name: str = None,
+    days_back: int = None,
+    awaiting_response: bool = False
+):
+    """
+    Query cold emails with optional filters.
+    
+    Args:
+        status (str, optional): Filter by status
+        institution (str, optional): Filter by institution (partial match)
+        recipient_name (str, optional): Filter by name (partial match)
+        days_back (int, optional): Show emails from last N days
+        awaiting_response (bool): Show only sent emails with no response
+    
+    Returns:
+        str: Formatted list of matching emails
+    """
+    data = _load_cold_emails()
+    emails = data["emails"]
+    
+    # Apply filters
+    if status:
+        emails = [e for e in emails if e["status"] == status]
+    if institution:
+        emails = [e for e in emails if institution.lower() in e["institution"].lower()]
+    if recipient_name:
+        emails = [e for e in emails if recipient_name.lower() in e["recipient_name"].lower()]
+    if days_back:
+        cutoff_date = (date.today() - __import__('datetime').timedelta(days=days_back)).isoformat()
+        emails = [e for e in emails if e["date_sent"] >= cutoff_date]
+    if awaiting_response:
+        emails = [e for e in emails if e["status"] in ["sent", "follow_up_sent"] and not e["response_date"]]
+    
+    if not emails:
+        return "No cold emails found with those filters."
+    
+    # Sort by date
+    emails = sorted(emails, key=lambda x: x["date_sent"], reverse=True)
+    
+    # Format output
+    result = [f"📧 Found {len(emails)} cold email(s):\n"]
+    
+    for i, email in enumerate(emails, 1):
+        inst = f" ({email['institution']})" if email['institution'] else ""
+        purp = f" - {email['purpose']}" if email['purpose'] else ""
+        resp = f"\n   ✅ Responded: {email['response_date']}" if email['response_date'] else ""
+        follows = f"\n   🔄 Follow-ups: {len(email['follow_up_dates'])}" if email['follow_up_dates'] else ""
+        
+        result.append(
+            f"{i}. {email['recipient_name']}{inst}{purp}\n"
+            f"   {email['recipient_email']} | {email['status']} | Sent: {email['date_sent']}{resp}{follows}"
+        )
+    
+    return "\n\n".join(result)
+
+
 # Wrap as ADK FunctionTools
 job_tracker_add_tool = FunctionTool(func=add_job_application)
 job_tracker_update_tool = FunctionTool(func=update_job_application)
 job_tracker_query_tool = FunctionTool(func=get_job_applications)
 job_tracker_delete_tool = FunctionTool(func=delete_job_application)
+
+cold_email_add_tool = FunctionTool(func=add_cold_email)
+cold_email_update_tool = FunctionTool(func=update_cold_email)
+cold_email_query_tool = FunctionTool(func=query_cold_emails)
 
 
 # ---------------------------------------------------------------------
@@ -652,11 +866,26 @@ def read_document(filename: str = "Professional Curriculum Vitae.docx"):
 
 papers_path = "chroma_db_research_papers_test"
 
-db_papers = Chroma(persist_directory=papers_path, embedding_function=get_embedding_function(),
-                   client_settings=Settings(anonymized_telemetry=False))
+try:
+    embedding_func = get_embedding_function()
+    if embedding_func is None:
+        print("[WARNING] Skipping ChromaDB initialization: No embedding function (GitHub Actions?)")
+        db_papers = None
+    elif not os.path.exists(papers_path):
+        print(f"[WARNING] Skipping ChromaDB initialization: Path not found {papers_path}")
+        db_papers = None
+    else:
+        db_papers = Chroma(persist_directory=papers_path, embedding_function=embedding_func,
+                           client_settings=Settings(anonymized_telemetry=False))
+except Exception as e:
+    print(f"[WARNING] Failed to initialize ChromaDB: {e}")
+    db_papers = None
 
 
 def search_pdf(query: str):
+    if db_papers is None:
+        return "Error: Research paper database is not available in this environment."
+        
     retriever = db_papers.as_retriever(search_kwargs={"k": 25,
                                                       "fetch_k": 250,
                                                       "lambda_mult": 0.8},

@@ -15,11 +15,10 @@ from google.genai import types
 from tools_2 import (read_document, read_scratchpad_tool, write_scratchpad_tool,
                               gmail_draft_tool_for_agent, gmail_read_tool_for_agent,
                               job_tracker_add_tool, job_tracker_update_tool,
-                              job_tracker_query_tool, cover_letter_generator_tool)
+                              job_tracker_query_tool, cover_letter_generator_tool,
+                              cold_email_add_tool, cold_email_update_tool, cold_email_query_tool)
 
-llm = LiteLlm(model="ollama_chat/llama3.2")
-
-date_today = date.today()
+import os
 
 retry_config=types.HttpRetryOptions(
     attempts=5,  # Maximum retry attempts
@@ -27,6 +26,20 @@ retry_config=types.HttpRetryOptions(
     initial_delay=1,
     http_status_codes=[429, 500, 503, 504] # Retry on these HTTP errors
 )
+
+# Detect if running in GitHub Actions
+IS_GHA = os.getenv("GITHUB_ACTIONS") == "true"
+
+if IS_GHA:
+    print("[INFO] Running in GitHub Actions - Switching to Gemini")
+    # Use Gemini for remote execution
+    llm = Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config)
+else:
+    print("[INFO] Running Locally - Using Ollama")
+    # Use Ollama for local execution
+    llm = LiteLlm(model="ollama_chat/llama3.2")
+
+date_today = date.today()
 
 read_document_tool = FunctionTool(
     func=read_document,
@@ -285,8 +298,20 @@ root_agent = LlmAgent(
     - If user applies AND wants cover letter → first add to tracker, then generate letter
     - If user generates cover letter for existing application → tracker auto-updates with cover_letter_generated=True
 
+
     --------------------------------------------------------------------
-    7. SCRATCHPAD RULES (OPTIONAL)
+    7. COLD EMAIL TRACKER
+    --------------------------------------------------------------------
+    - When tracking cold emails, ALWAYS extract the recipient's NAME in addition to their email.
+    - If the user says "I emailed Dr. Smith at smith@mit.edu", extract:
+      - recipient_name: "Dr. Smith"
+      - recipient_email: "smith@mit.edu"
+      - institution: "MIT" (inferred or explicit)
+    - Do NOT just use the email address as the name.
+    - If the name is missing, ask the user or infer it from the email context if obvious.
+
+    --------------------------------------------------------------------
+    8. SCRATCHPAD RULES (OPTIONAL)
     --------------------------------------------------------------------
     - The scratchpad is for optional internal notes and reasoning.
     - You may use it to track multi-step plans or save important information.
@@ -294,14 +319,14 @@ root_agent = LlmAgent(
     - IMPORTANT: If a user asks for emails, CV info, or job tracking → call the appropriate tool FIRST, scratchpad is optional.
 
     --------------------------------------------------------------------
-    8. AFTER TOOL RESULTS
+    9. AFTER TOOL RESULTS
     --------------------------------------------------------------------
     - Review the tool results carefully.
     - Provide a clear, concise answer based on the results.
     - Do not hallucinate or add information not present in the tool output.
 
     --------------------------------------------------------------------
-    9. REFLECTION & SELF-CORRECTION
+    10. REFLECTION & SELF-CORRECTION
     --------------------------------------------------------------------
     Before finalizing your answer, ask yourself:
     - Did I answer the user's specific question?
@@ -310,7 +335,7 @@ root_agent = LlmAgent(
     - If I am unsure, did I state my uncertainty?
 
     --------------------------------------------------------------------
-    10. GENERAL ANSWERING BEHAVIOR
+    11. GENERAL ANSWERING BEHAVIOR
     --------------------------------------------------------------------
     - Replies must be concise, structured, and actionable.
     - If something is missing or uncertain, say so explicitly.
@@ -330,11 +355,13 @@ root_agent = LlmAgent(
         job_tracker_add_tool,
         job_tracker_update_tool,
         job_tracker_query_tool,
-        cover_letter_generator_tool
+        cover_letter_generator_tool,
+        cold_email_add_tool,
+        cold_email_update_tool,
+        cold_email_query_tool
     ],
     generate_content_config=types.GenerateContentConfig(temperature=0.01),
     after_agent_callback= auto_save_session_to_memory_callback,
-# planner=PlanReActPlanner()  # Commented out - causes issues with interactive mode
 )
 
 
