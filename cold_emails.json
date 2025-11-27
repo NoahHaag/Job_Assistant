@@ -133,6 +133,20 @@
       "follow_up_dates": [],
       "notes": "No response yet",
       "last_updated": "2025-11-26T19:07:08.513352"
+    },
+    {
+      "id": "0a7f3ce0",
+      "recipient_name": "Dr. Davies",
+      "recipient_email": "dr.davies@example.com",
+      "institution": "University of Cambridge",
+      "subject": "",
+      "purpose": "",
+      "date_sent": "2025-11-27",
+      "status": "responded",
+      "response_date": null,
+      "follow_up_dates": [],
+      "notes": "Test response from script",
+      "last_updated": "2025-11-27T11:25:59.153226"
     }
   ]
 }

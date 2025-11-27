@@ -528,6 +528,7 @@ def add_cold_email(
 def update_cold_email(
     email_id: str = None,
     recipient_email: str = None,
+    recipient_name: str = None,
     status: str = None,
     response_date: str = None,
     follow_up_sent: bool = False,
@@ -539,6 +540,7 @@ def update_cold_email(
     Args:
         email_id (str, optional): Email ID to update
         recipient_email (str, optional): Recipient's email (if no email_id)
+        recipient_name (str, optional): Recipient's name (if no email_id/email) - partial match
         status (str, optional): New status (sent, responded, no_response, follow_up_sent)
         response_date (str, optional): Date they responded (YYYY-MM-DD)
         follow_up_sent (bool): If True, adds today to follow_up_dates
@@ -547,8 +549,9 @@ def update_cold_email(
     Returns:
         str: Confirmation message
     """
-    if not email_id and not recipient_email:
-        return "Error: Must provide either email_id or recipient_email"
+    print(f"[DEBUG] update_cold_email called with: name={recipient_name}, email={recipient_email}, id={email_id}")
+    if not email_id and not recipient_email and not recipient_name:
+        return "Error: Must provide email_id, recipient_email, or recipient_name"
     
     valid_statuses = ["sent", "responded", "no_response", "follow_up_sent"]
     if status and status not in valid_statuses:
@@ -567,6 +570,16 @@ def update_cold_email(
         matching_emails = [e for e in data["emails"] if e["recipient_email"].lower() == recipient_email.lower()]
         if matching_emails:
             email_to_update = max(matching_emails, key=lambda x: x["last_updated"])
+    elif recipient_name:
+        # Partial match on name
+        matching_emails = [e for e in data["emails"] if recipient_name.lower() in e["recipient_name"].lower()]
+        if len(matching_emails) == 0:
+            return f"Error: No email found matching name '{recipient_name}'"
+        elif len(matching_emails) > 1:
+            names = [f"{e['recipient_name']} ({e['recipient_email']})" for e in matching_emails]
+            return f"Error: Multiple emails found matching '{recipient_name}': {', '.join(names)}. Please be more specific."
+        else:
+            email_to_update = matching_emails[0]
     
     if not email_to_update:
         return "Error: No email found"

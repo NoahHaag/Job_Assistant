@@ -328,6 +328,14 @@ root_agent = LlmAgent(
     - ALWAYS use cold_email_query_tool() to display the current state.
     - This ensures proper formatting and prevents errors.
 
+    **Updating Cold Emails:**
+    **Updating Cold Emails:**
+    - User says "Dr. Davies responded" → call cold_email_update_tool(recipient_name="Dr. Davies", status="responded", response_date=today)
+    - User says "Dr. X said no" → call cold_email_update_tool(recipient_name="Dr. X", status="responded", notes="Response: No")
+    - User says "I sent a follow up to Y" → call cold_email_update_tool(recipient_name="Y", follow_up_sent=True)
+    - User says "Add a note to Z" → call cold_email_update_tool(recipient_name="Z", notes="...")
+
+
     --------------------------------------------------------------------
     8. SCRATCHPAD RULES (OPTIONAL)
     --------------------------------------------------------------------
@@ -358,6 +366,9 @@ root_agent = LlmAgent(
     - Replies must be concise, structured, and actionable.
     - If something is missing or uncertain, say so explicitly.
     - Ask for clarification only when essential.
+    - **When showing tracker data (jobs, emails), prefer using the tool's output directly or a very simple summary.**
+    - **Do NOT attempt complex reformatting of lists that might lead to repetition.**
+    - **Avoid repeating fields like "Institution" multiple times for the same item.**
 
     """
     ,
@@ -401,7 +412,11 @@ async def summarize_conversation(history_text, model):
     prompt = f"""
     Please summarize the following conversation history. 
     Focus on key decisions, user preferences, and important facts found.
-    Keep it concise.
+    
+    CRITICAL INSTRUCTION:
+    - Do NOT list specific data items (like individual emails, job applications, or CV details) that are stored in files/tools. 
+    - Only summarize the *actions taken* (e.g., 'User added 4 cold emails', 'User applied to Google') and *current goals*.
+    - Keep it concise.
 
     History:
     {history_text}
