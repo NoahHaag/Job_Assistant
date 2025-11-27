@@ -15,6 +15,15 @@ $trackerFiles = git status --porcelain | Select-String -Pattern '(cold_emails\.j
 if ($trackerFiles) {
     Write-Host "[PULL] Tracker files modified. Pulling latest changes first..." -ForegroundColor Yellow
     
+    # Stash any uncommitted changes first
+    $stashNeeded = $false
+    git diff --quiet
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[STASH] Stashing uncommitted changes..." -ForegroundColor Cyan
+        git stash push -m "Auto-stash before sync"
+        $stashNeeded = $true
+    }
+    
     # Pull latest
     git pull --rebase origin main
     
@@ -23,18 +32,31 @@ if ($trackerFiles) {
         exit 1
     }
     
+    # Restore stashed changes
+    if ($stashNeeded) {
+        Write-Host "[STASH] Restoring stashed changes..." -ForegroundColor Cyan
+        git stash pop
+    }
+    
     Write-Host "[SUCCESS] Synced with remote." -ForegroundColor Green
 }
 
 # Stage all changes
 git add .
 
-# Commit
-Write-Host "[COMMIT] Committing changes..." -ForegroundColor Cyan
-git commit -m $Message
+# Check if there are any changes to commit
+git diff --staged --quiet
 
-# Push
-Write-Host "[PUSH] Pushing to GitHub..." -ForegroundColor Cyan
-git push origin main
-
-Write-Host "[SUCCESS] All done!" -ForegroundColor Green
+if ($LASTEXITCODE -ne 0) {
+    # There are changes - commit and push
+    Write-Host "[COMMIT] Committing changes..." -ForegroundColor Cyan
+    git commit -m $Message
+    
+    Write-Host "[PUSH] Pushing to GitHub..." -ForegroundColor Cyan
+    git push origin main
+    
+    Write-Host "[SUCCESS] All done!" -ForegroundColor Green
+}
+else {
+    Write-Host "[INFO] No changes to commit" -ForegroundColor Yellow
+}

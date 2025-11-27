@@ -77,6 +77,62 @@
       "follow_up_dates": [],
       "notes": "Awaiting response",
       "last_updated": "2025-11-26T23:43:28.561952"
+    },
+    {
+      "id": "816e521a",
+      "recipient_name": "Dr. Brewton",
+      "recipient_email": "rachel.brewton@fau.edu",
+      "institution": "FAU",
+      "subject": "",
+      "purpose": "",
+      "date_sent": "2025-11-26",
+      "status": "sent",
+      "response_date": null,
+      "follow_up_dates": [],
+      "notes": "No response yet",
+      "last_updated": "2025-11-26T19:07:08.505367"
+    },
+    {
+      "id": "5c229745",
+      "recipient_name": "Dr. Webster",
+      "recipient_email": "mw4758@nyu.edu",
+      "institution": "NYU",
+      "subject": "",
+      "purpose": "",
+      "date_sent": "2025-11-26",
+      "status": "sent",
+      "response_date": null,
+      "follow_up_dates": [],
+      "notes": "No response yet",
+      "last_updated": "2025-11-26T19:07:08.508356"
+    },
+    {
+      "id": "4518d809",
+      "recipient_name": "Dr. Fay",
+      "recipient_email": "gfay@umassd.edu",
+      "institution": "Umass Dartmouth",
+      "subject": "",
+      "purpose": "",
+      "date_sent": "2025-11-26",
+      "status": "sent",
+      "response_date": null,
+      "follow_up_dates": [],
+      "notes": "No response yet",
+      "last_updated": "2025-11-26T19:07:08.511356"
+    },
+    {
+      "id": "709ea4cb",
+      "recipient_name": "Dr. White",
+      "recipient_email": "Easton.White@unh.edu",
+      "institution": "UNH",
+      "subject": "",
+      "purpose": "",
+      "date_sent": "2025-11-26",
+      "status": "sent",
+      "response_date": null,
+      "follow_up_dates": [],
+      "notes": "No response yet",
+      "last_updated": "2025-11-26T19:07:08.513352"
     }
   ]
 }

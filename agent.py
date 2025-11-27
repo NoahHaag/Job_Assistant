@@ -36,8 +36,8 @@ api_key = os.getenv("GOOGLE_API_KEY")
 
 if api_key:
     api_key = api_key.strip().strip('"').strip("'")
-    print(f"[DEBUG] GOOGLE_API_KEY found. Length: {len(api_key)}")
-    print(f"[DEBUG] Key start: {repr(api_key[:4])}, Key end: {repr(api_key[-4:])}")
+    # print(f"[DEBUG] GOOGLE_API_KEY found. Length: {len(api_key)}")
+    # print(f"[DEBUG] Key start: {repr(api_key[:4])}, Key end: {repr(api_key[-4:])}")
     gemini_kwargs["api_key"] = api_key
 elif IS_GHA:
     print("[ERROR] GOOGLE_API_KEY not found in environment variables!")
@@ -322,6 +322,11 @@ root_agent = LlmAgent(
       - institution: "MIT" (inferred or explicit)
     - Do NOT just use the email address as the name.
     - If the name is missing, ask the user or infer it from the email context if obvious.
+    
+    **CRITICAL: After adding cold emails, ALWAYS call cold_email_query_tool to show the tracker.**
+    - DO NOT manually format or summarize the cold email tracker yourself.
+    - ALWAYS use cold_email_query_tool() to display the current state.
+    - This ensures proper formatting and prevents errors.
 
     --------------------------------------------------------------------
     8. SCRATCHPAD RULES (OPTIONAL)
