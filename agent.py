@@ -497,30 +497,14 @@ async def main():
         )
 
         final_answer = None
-        event_count = 0
         try:
             async for event in runner.run_async(
                     user_id=user_id,
                     session_id=session_id,
                     new_message=user_message
             ):
-                event_count += 1
-                print(f"[DEBUG] Event {event_count}: is_final={event.is_final_response()}, has_content={hasattr(event, 'content')}")
                 if event.is_final_response():
-                    print(f"[DEBUG] Final response detected. Parts count: {len(event.content.parts) if event.content.parts else 0}")
-                    if event.content.parts and len(event.content.parts) == 0:
-                        print(f"[DEBUG] WARNING: Final response has zero parts!")
-                        print(f"[DEBUG] Event content: {event.content}")
-                    # Collect all text parts from the response
-                    text_parts = []
-                    if event.content.parts:
-                        for i, part in enumerate(event.content.parts):
-                            print(f"[DEBUG] Part {i}: has_text={hasattr(part, 'text')}, text_len={len(part.text) if hasattr(part, 'text') and part.text else 0}")
-                            if hasattr(part, 'text') and part.text:
-                                text_parts.append(part.text)
-                    if text_parts:
-                        final_answer = '\n'.join(text_parts)
-                        print(f"[DEBUG] Final answer length: {len(final_answer)}")
+                    final_answer = event.content.parts[0].text
         except Exception as e:
             print(f"[ERROR] Exception during event processing: {type(e).__name__}: {e}")
             import traceback
