@@ -50,7 +50,7 @@ if IS_GHA:
 else:
     print("[INFO] Running Locally - Using Ollama")
     # Use Ollama for local execution
-    llm = LiteLlm(model="ollama_chat/llama3.2")
+    llm = Gemini(model="gemini-2.5-flash-lite", **gemini_kwargs) #LiteLlm(model="ollama_chat/llama3.2")
 
 date_today = date.today()
 

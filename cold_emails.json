@@ -137,16 +137,16 @@
     {
       "id": "0a7f3ce0",
       "recipient_name": "Dr. Davies",
-      "recipient_email": "dr.davies@example.com",
-      "institution": "University of Cambridge",
+      "recipient_email": "dr.davies@bu.edu",
+      "institution": "Boston University",
       "subject": "",
       "purpose": "",
       "date_sent": "2025-11-27",
       "status": "responded",
-      "response_date": null,
+      "response_date": "2025-11-27",
       "follow_up_dates": [],
-      "notes": "Test response from script",
-      "last_updated": "2025-11-27T11:25:59.153226"
+      "notes": "Responded with a no, there is no room in her lab",
+      "last_updated": "2025-11-27T11:36:51.023032"
     }
   ]
 }
