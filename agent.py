@@ -18,7 +18,7 @@ from tools_2 import (read_document, read_scratchpad_tool, write_scratchpad_tool,
                               job_tracker_query_tool, cover_letter_generator_tool,
                               cold_email_add_tool, cold_email_update_tool, cold_email_query_tool,
                               network_graph_tool, job_search_tool, job_opportunities_query_tool,
-                              serpapi_usage_tool, job_opportunity_delete_tool)
+                              serpapi_usage_tool, job_opportunity_delete_tool, google_scholar_tool)
 
 import os
 
@@ -409,6 +409,16 @@ root_agent = LlmAgent(
     - Job opportunities = discovered jobs not yet applied to
     - Job applications = jobs you've actually applied to (tracked in job_applications.json)
     - When user says "apply to [job]", add to job tracker and optionally mark opportunity as applied
+    
+    --------------------------------------------------------------------
+    10. GOOGLE SCHOLAR SEARCH
+    --------------------------------------------------------------------
+    When the user asks for research papers, citations, or academic sources:
+    - Use google_scholar_tool(query, year_start, year_end, max_results)
+    - Example: google_scholar_tool(query="coral bleaching", year_start=2024)
+    - This tool uses SerpAPI credits (tracked automatically).
+    - Always summarize the key findings (title, year, citations) for the user.
+    - Provide links to the papers if available.
 
     --------------------------------------------------------------------
     10. SCRATCHPAD RULES (OPTIONAL)
@@ -466,7 +476,8 @@ root_agent = LlmAgent(
         job_search_tool,
         job_opportunities_query_tool,
         serpapi_usage_tool,
-        job_opportunity_delete_tool
+        job_opportunity_delete_tool,
+        google_scholar_tool
     ],
     generate_content_config=types.GenerateContentConfig(
     temperature=0.1,

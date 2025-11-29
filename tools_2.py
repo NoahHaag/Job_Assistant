@@ -1214,6 +1214,128 @@ job_opportunity_delete_tool = FunctionTool(func=delete_job_opportunity)
 
 
 # ---------------------------------------------------------------------
+# Google Scholar Search - SerpAPI with usage tracking
+# ---------------------------------------------------------------------
+
+def search_google_scholar_serpapi(
+    query: str,
+    as_ylo: int = None,
+    as_yhi: int = None,
+    max_results: int = 10
+):
+    """
+    Core SerpAPI Google Scholar search function.
+    
+    Args:
+        query: Search query (e.g., "coral bleaching")
+        as_ylo: Start year (optional)
+        as_yhi: End year (optional)
+        max_results: Number of results to return (max 10 for free tier)
+    
+    Returns:
+        List of result dictionaries
+    """
+    api_key = os.getenv("SERPAPI_KEY")
+    
+    if not api_key:
+        return {"error": "SERPAPI_KEY not found in environment variables."}
+    
+    url = "https://serpapi.com/search"
+    
+    params = {
+        "engine": "google_scholar",
+        "q": query,
+        "api_key": api_key,
+        "num": min(max_results, 10)
+    }
+    
+    if as_ylo:
+        params["as_ylo"] = as_ylo
+    if as_yhi:
+        params["as_yhi"] = as_yhi
+    
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        results = response.json()
+        
+        organic_results = []
+        for result in results.get("organic_results", []):
+            organic_results.append({
+                "title": result.get("title", ""),
+                "link": result.get("link", ""),
+                "snippet": result.get("snippet", ""),
+                "publication_info": result.get("publication_info", {}).get("summary", ""),
+                "cited_by": result.get("inline_links", {}).get("cited_by", {}).get("total", 0),
+                "year": result.get("publication_info", {}).get("summary", "").split(" - ")[-1] if " - " in result.get("publication_info", {}).get("summary", "") else ""
+            })
+        
+        return organic_results
+    
+    except requests.exceptions.RequestException as e:
+        return {"error": f"SerpAPI request failed: {str(e)}"}
+    except Exception as e:
+        return {"error": f"Unexpected error: {str(e)}"}
+
+
+def search_google_scholar(
+    query: str,
+    year_start: int = None,
+    year_end: int = None,
+    max_results: int = 5,
+    usage_limit: int = 95
+):
+    """
+    Search Google Scholar using SerpAPI with usage tracking.
+    
+    Args:
+        query: Search query (e.g., "Acropora cervicornis restoration")
+        year_start: Start year (optional)
+        year_end: End year (optional)
+        max_results: Number of results (default: 5)
+        usage_limit: Stop searching when this many monthly searches reached (default: 95)
+    
+    Returns:
+        Formatted string with search results
+    """
+    # Check usage
+    usage_data = _load_serpapi_usage()
+    searches_this_month = _count_searches_this_month(usage_data)
+    
+    if searches_this_month >= usage_limit:
+        return f"⚠️ Usage limit reached ({searches_this_month}/{usage_data['monthly_limit']}). Search skipped."
+    
+    # Perform search
+    results = search_google_scholar_serpapi(query, year_start, year_end, max_results)
+    
+    if isinstance(results, dict) and "error" in results:
+        return f"❌ Search failed: {results['error']}"
+    
+    # Log usage
+    _log_serpapi_search(f"Scholar: {query}", len(results))
+    
+    if not results:
+        return "No results found."
+    
+    # Format output
+    output = [f"🎓 Google Scholar Results for '{query}':\n"]
+    
+    for i, res in enumerate(results, 1):
+        cited = f" (Cited by {res['cited_by']})" if res['cited_by'] else ""
+        output.append(
+            f"{i}. {res['title']}\n"
+            f"   {res['publication_info']}{cited}\n"
+            f"   Snippet: {res['snippet']}\n"
+            f"   Link: {res['link']}"
+        )
+    
+    return "\n\n".join(output)
+
+
+google_scholar_tool = FunctionTool(func=search_google_scholar)
+
+
+# ---------------------------------------------------------------------
 # Cover Letter Generator - AI-powered with PDF & Word export
 # ---------------------------------------------------------------------
 
