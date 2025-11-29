@@ -48,9 +48,9 @@ if IS_GHA:
     # Use Gemini for remote execution
     llm = Gemini(model="gemini-2.5-flash-lite", **gemini_kwargs)
 else:
-    print("[INFO] Running Locally - Using Ollama")
-    # Use Ollama for local execution
-    llm = Gemini(model="gemini-2.5-flash-lite", **gemini_kwargs) #LiteLlm(model="ollama_chat/llama3.2")
+    print("[INFO] Running Locally - Using Gemini")
+    # Use Gemini for local execution
+    llm = Gemini(model="gemini-2.5-flash", **gemini_kwargs)
 
 date_today = date.today()
 
@@ -72,7 +72,7 @@ async def auto_save_session_to_memory_callback(callback_context):
 
 google_searching_agent = LlmAgent(
     name="google_search_agent",
-    model=Gemini(model="gemini-2.5-flash-lite", **gemini_kwargs),
+    model=Gemini(model="gemini-2.5-flash", **gemini_kwargs),
     description="Searches google to help answer questions.",
     instruction=f"""
     You are a specialized sub-agent for real-time information gathering. 
@@ -94,13 +94,17 @@ google_searching_agent = LlmAgent(
 
 gmail_search_agent = LlmAgent(
     name = "gmail_search_agent",
-    model=Gemini(model="gemini-2.5-flash-lite", **gemini_kwargs),
+    model=Gemini(model="gemini-2.5-flash", **gemini_kwargs),
     description="searches gmail to answer questions about emails the user has received.",
     instruction="""
     You are a dedicated Gmail sub-agent. Your ONLY job is to convert natural language into Gmail search queries.
 
     CRITICAL: You ONLY filter by sender, label, and unread status. DO NOT add content-based keywords.
     The root agent will analyze content AFTER you fetch emails.
+
+    **YOU MUST ALWAYS PROVIDE A TEXT RESPONSE - NEVER return empty output.**
+    - If NO emails found: Say "No emails found matching your criteria. The query used was: [query]"
+    - If emails found: List them with their details
 
     DEFAULT BEHAVIOR:
     - If no specific filter is requested, search ALL emails in the inbox (`label:inbox`).
@@ -112,6 +116,7 @@ gmail_search_agent = LlmAgent(
     2. **Unread:** Add `is:unread` ONLY if user explicitly says "unread", "new", or "unseen".
     3. **Label:** Default to `label:inbox`.
     4. **Content keywords:** NEVER add. Questions about content (like "which have jobs") should be answered by the root agent after fetching.
+    5. **Sorting:** DO NOT add "sort by" or "order by" to the query. Gmail queries do not support this.
 
     FEW-SHOT EXAMPLES:
     
@@ -136,8 +141,7 @@ gmail_search_agent = LlmAgent(
     Gmail Query: "is:unread label:inbox"
     Next Action: call gmail_read_tool_for_agent with query="is:unread label:inbox", max_results=1
     """,
-    tools=[gmail_read_tool_for_agent],
-    output_key="emails"
+    tools=[gmail_read_tool_for_agent]
 )
 
 # ---------------------------------------------------------
@@ -408,9 +412,8 @@ root_agent = LlmAgent(
         cold_email_query_tool
     ],
     generate_content_config=types.GenerateContentConfig(
-    temperature=0.01,
-    max_output_tokens=2048,
-    response_modalities=["TEXT"]
+    temperature=0.1,
+    max_output_tokens=2048
 ),
     after_agent_callback= auto_save_session_to_memory_callback,
 )
@@ -503,8 +506,29 @@ async def main():
                     session_id=session_id,
                     new_message=user_message
             ):
+                print(f"[DEBUG] Event received: is_final={event.is_final_response()}")
+                if event.content:
+                    if event.content.parts:
+                        for i, part in enumerate(event.content.parts):
+                            fn_call = part.function_call.name if part.function_call else 'None'
+                            fn_resp = part.function_response.name if part.function_response else 'None'
+                            txt = repr(part.text) if part.text else 'None'
+                            print(f"[DEBUG] Part {i}: text={txt} fn_call={fn_call} fn_resp={fn_resp}")
+                    else:
+                        print("[DEBUG] Event content has no parts")
+                else:
+                    print("[DEBUG] Event has no content")
+                
+                # Check finish reason if available
+                if hasattr(event, 'finish_reason'):
+                     print(f"[DEBUG] Finish reason: {event.finish_reason}")
+                
                 if event.is_final_response():
-                    final_answer = event.content.parts[0].text
+                    # Check if content and parts exist before accessing
+                    if event.content and event.content.parts:
+                        text_parts = [p.text for p in event.content.parts if p.text]
+                        if text_parts:
+                            final_answer = "\n".join(text_parts)
         except Exception as e:
             print(f"[ERROR] Exception during event processing: {type(e).__name__}: {e}")
             import traceback
