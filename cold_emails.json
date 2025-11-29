@@ -14,7 +14,7 @@
         "2025-11-25"
       ],
       "notes": "",
-      "last_updated": "2025-11-26T15:26:07.901173"
+      "last_updated": "2025-11-28T22:59:12.722449"
     },
     {
       "id": "2ac1d371",
@@ -30,7 +30,7 @@
         "2025-11-25"
       ],
       "notes": "",
-      "last_updated": "2025-11-26T15:26:07.902722"
+      "last_updated": "2025-11-28T22:59:14.952388"
     },
     {
       "id": "88ebdea9",
@@ -46,7 +46,7 @@
         "2025-11-25"
       ],
       "notes": "",
-      "last_updated": "2025-11-26T15:26:07.903224"
+      "last_updated": "2025-11-28T22:59:17.232445"
     },
     {
       "id": "c577013f",
@@ -62,7 +62,7 @@
         "2025-11-25"
       ],
       "notes": "",
-      "last_updated": "2025-11-26T15:26:07.904228"
+      "last_updated": "2025-11-28T22:59:19.758099"
     },
     {
       "id": "b604be5e",
@@ -90,7 +90,7 @@
       "response_date": null,
       "follow_up_dates": [],
       "notes": "No response yet",
-      "last_updated": "2025-11-26T19:07:08.505367"
+      "last_updated": "2025-11-28T22:59:22.484819"
     },
     {
       "id": "5c229745",
@@ -104,7 +104,7 @@
       "response_date": null,
       "follow_up_dates": [],
       "notes": "No response yet",
-      "last_updated": "2025-11-26T19:07:08.508356"
+      "last_updated": "2025-11-28T22:59:24.574571"
     },
     {
       "id": "4518d809",
@@ -124,7 +124,7 @@
       "id": "709ea4cb",
       "recipient_name": "Dr. White",
       "recipient_email": "Easton.White@unh.edu",
-      "institution": "UNH",
+      "institution": "University of New Hampshire",
       "subject": "",
       "purpose": "",
       "date_sent": "2025-11-26",
@@ -203,6 +203,48 @@
       "follow_up_dates": [],
       "notes": "Informational Zoom call on 11/24.",
       "last_updated": "2025-11-28T21:05:55.495495"
+    },
+    {
+      "id": "5af5eca3",
+      "recipient_name": "Dr. Deyle",
+      "recipient_email": "edeyle@bu.edu",
+      "institution": "Boston University",
+      "subject": "",
+      "purpose": "Job inquiry",
+      "date_sent": "2023-11-18",
+      "status": "sent",
+      "response_date": null,
+      "follow_up_dates": [],
+      "notes": "",
+      "last_updated": "2025-11-29T11:20:23.579094"
+    },
+    {
+      "id": "511cf618",
+      "recipient_name": "Dr. Kajiura",
+      "recipient_email": "kajiura@fau.edu",
+      "institution": "FAU",
+      "subject": "",
+      "purpose": "Job inquiry",
+      "date_sent": "2023-11-18",
+      "status": "sent",
+      "response_date": null,
+      "follow_up_dates": [],
+      "notes": "Responded negatively, no room in lab.",
+      "last_updated": "2025-11-29T11:20:24.988259"
+    },
+    {
+      "id": "229abc5b",
+      "recipient_name": "Dr. Byrnes",
+      "recipient_email": "jarrett.byrnes@umb.edu",
+      "institution": "Umass Boston",
+      "subject": "",
+      "purpose": "Job inquiry",
+      "date_sent": "2023-11-17",
+      "status": "sent",
+      "response_date": null,
+      "follow_up_dates": [],
+      "notes": "",
+      "last_updated": "2025-11-29T11:20:26.428203"
     }
   ]
 }
