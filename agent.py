@@ -506,23 +506,6 @@ async def main():
                     session_id=session_id,
                     new_message=user_message
             ):
-                print(f"[DEBUG] Event received: is_final={event.is_final_response()}")
-                if event.content:
-                    if event.content.parts:
-                        for i, part in enumerate(event.content.parts):
-                            fn_call = part.function_call.name if part.function_call else 'None'
-                            fn_resp = part.function_response.name if part.function_response else 'None'
-                            txt = repr(part.text) if part.text else 'None'
-                            print(f"[DEBUG] Part {i}: text={txt} fn_call={fn_call} fn_resp={fn_resp}")
-                    else:
-                        print("[DEBUG] Event content has no parts")
-                else:
-                    print("[DEBUG] Event has no content")
-                
-                # Check finish reason if available
-                if hasattr(event, 'finish_reason'):
-                     print(f"[DEBUG] Finish reason: {event.finish_reason}")
-                
                 if event.is_final_response():
                     # Check if content and parts exist before accessing
                     if event.content and event.content.parts:
