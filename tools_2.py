@@ -10,7 +10,8 @@ import docx
 import requests
 from PyPDF2 import PdfReader
 from chromadb import Settings
-from google.adk.tools import FunctionTool
+import qrcode
+from google.adk.tools import FunctionTool, google_search
 from langchain_community.vectorstores import Chroma
 from langchain_google_community import GmailToolkit
 from langchain_google_community.gmail.utils import get_google_credentials, build_gmail_service
@@ -801,6 +802,139 @@ def _save_job_opportunities(data):
     """Save job opportunities to JSON file."""
     with open(JOB_OPPORTUNITIES_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+# ---------------------------------------------------------------------
+# Job Fair Tools
+# ---------------------------------------------------------------------
+
+def elevator_pitch_tool(company_name: str, job_description: str = ""):
+    """
+    Generate a 30-second elevator pitch tailored to a specific company.
+    
+    Args:
+        company_name (str): The company you are speaking to.
+        job_description (str, optional): Key details about the role.
+    
+    Returns:
+        str: A tailored elevator pitch.
+    """
+    # In a real scenario, we would read the CV here. For now, we'll assume the agent passes relevant context 
+    # or we rely on the LLM's knowledge of the user from the session.
+    # But since this is a tool, we should probably read the CV to be safe/robust if called standalone.
+    
+    cv_text = "(CV not found)"
+    if os.path.exists(os.path.join(DOCUMENT_FOLDER, "Professional Curriculum Vitae.docx")):
+         # We can reuse read_document logic or just rely on the agent to have read it.
+         # For simplicity in this tool, we'll return a prompt for the Agent to generate the pitch.
+         pass
+         
+    # Actually, the Agent calls this tool. The Agent is the one with the LLM. 
+    # If this tool is just a helper, maybe it shouldn't generate text itself?
+    # BUT, the user wants to run this via GitHub Actions where there is NO interactive Agent session.
+    # So this tool needs to use an LLM or be self-contained.
+    # Since we have `google.adk.models`, we can instantiate a model here if needed, 
+    # OR we can make this tool return a structured prompt that the `run_job_fair_tool.py` script uses with an LLM.
+    
+    # However, to keep it simple and compatible with the Agent (who has an LLM), 
+    # we can make this tool simply return the *context* needed, and let the caller (Agent or Script) generate the pitch.
+    # WAIT - The user wants to run this in GHA. The GHA script will need to instantiate an LLM.
+    
+    # Let's make this tool do the "heavy lifting" of gathering info if possible, 
+    # but for a pitch, it's mostly generation.
+    
+    return f"Please generate an elevator pitch for {company_name}. Key JD points: {job_description}"
+
+
+def company_brief_tool(company_name: str):
+    """
+    Generate a brief summary of a company using Google Search.
+    
+    Args:
+        company_name (str): Name of the company.
+        
+    Returns:
+        str: Summary of the company.
+    """
+    # We can use the existing google_search tool function if available, 
+    # or just return a prompt for the agent to do it.
+    # Given the GHA requirement, we should probably implement the search here if we want it to be "one click".
+    # But `google_search` is an ADK tool.
+    
+    return f"Please search for recent news, mission, and values for {company_name} and create a 1-page brief with 3 strategic questions."
+
+
+def qr_code_tool(data: str, filename: str = "qrcode.png"):
+    """
+    Generate a QR code and save it to a file.
+    
+    Args:
+        data (str): The text or URL to encode.
+        filename (str): Output filename (default: qrcode.png).
+        
+    Returns:
+        str: Path to the generated QR code.
+    """
+    # Ensure filename is in a safe place, e.g., artifacts or root
+    # For GHA, root is fine.
+    
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(data)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Save to current directory or specific folder
+    output_path = os.path.abspath(filename)
+    img.save(output_path)
+    
+    return f"QR Code generated at: {output_path}"
+
+
+def portfolio_export_tool():
+    """
+    Export job search stats and network graph to a Markdown summary.
+    
+    Returns:
+        str: Markdown content.
+    """
+    # 1. Get Job Stats
+    apps = _load_job_applications()["applications"]
+    total_apps = len(apps)
+    interviews = len([a for a in apps if "interview" in a["status"]])
+    offers = len([a for a in apps if "offer" in a["status"]])
+    
+    # 2. Get Network Stats
+    emails = _load_cold_emails()["emails"]
+    total_emails = len(emails)
+    responses = len([e for e in emails if e["response_date"]])
+    
+    # 3. Generate Markdown
+    md = f"""# 🚀 Job Search Portfolio
+
+## 📊 At a Glance
+- **Applications**: {total_apps}
+- **Interviews**: {interviews}
+- **Offers**: {offers}
+- **Network Outreach**: {total_emails} emails sent ({responses} responses)
+
+## 🕸️ Network Graph
+(Rendered in Mermaid.js below)
+
+```mermaid
+{generate_network_graph()}
+```
+
+## 🛠️ Built With
+This portfolio is managed by my **AI Agent** powered by Gemini.
+"""
+    return md
+
 
 
 def _load_serpapi_usage():

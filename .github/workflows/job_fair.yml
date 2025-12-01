@@ -1,0 +1,55 @@
+name: Job Fair Tools
+
+on:
+  workflow_dispatch:
+    inputs:
+      tool:
+        description: 'Tool to run'
+        required: true
+        default: 'pitch'
+        type: choice
+        options:
+        - pitch
+        - brief
+        - qr
+        - portfolio
+      input_text:
+        description: 'Input Text (Company Name for Pitch/Brief, Data for QR)'
+        required: false
+      jd:
+        description: 'Job Description (Optional, for Pitch)'
+        required: false
+
+jobs:
+  run-tool:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Run Tool
+      env:
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+      run: |
+        python run_job_fair_tool.py --tool "${{ inputs.tool }}" --input "${{ inputs.input_text }}" --jd "${{ inputs.jd }}"
+        
+    - name: Upload Artifacts (if any)
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: job-fair-output
+        path: |
+          *.png
+          *.html
