@@ -140,9 +140,9 @@ def main():
         </html>
         """
         
-        with open("portfolio.html", "w", encoding="utf-8") as f:
+        with open("index.html", "w", encoding="utf-8") as f:
             f.write(html_content)
-        print("Generated portfolio.html with rendered graph.")
+        print("Generated index.html (portfolio) with rendered graph.")
 
     # Output to console
     print("\n" + "="*30)

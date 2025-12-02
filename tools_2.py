@@ -823,27 +823,17 @@ def elevator_pitch_tool(company_name: str, job_description: str = ""):
     # or we rely on the LLM's knowledge of the user from the session.
     # But since this is a tool, we should probably read the CV to be safe/robust if called standalone.
     
-    cv_text = "(CV not found)"
-    if os.path.exists(os.path.join(DOCUMENT_FOLDER, "Professional Curriculum Vitae.docx")):
-         # We can reuse read_document logic or just rely on the agent to have read it.
-         # For simplicity in this tool, we'll return a prompt for the Agent to generate the pitch.
-         pass
-         
-    # Actually, the Agent calls this tool. The Agent is the one with the LLM. 
-    # If this tool is just a helper, maybe it shouldn't generate text itself?
-    # BUT, the user wants to run this via GitHub Actions where there is NO interactive Agent session.
-    # So this tool needs to use an LLM or be self-contained.
-    # Since we have `google.adk.models`, we can instantiate a model here if needed, 
-    # OR we can make this tool return a structured prompt that the `run_job_fair_tool.py` script uses with an LLM.
+    # Read CV and Resume
+    cv_text = read_document("Professional Curriculum Vitae.docx")
+    resume_text = read_document("Resume.docx")
     
-    # However, to keep it simple and compatible with the Agent (who has an LLM), 
-    # we can make this tool simply return the *context* needed, and let the caller (Agent or Script) generate the pitch.
-    # WAIT - The user wants to run this in GHA. The GHA script will need to instantiate an LLM.
-    
-    # Let's make this tool do the "heavy lifting" of gathering info if possible, 
-    # but for a pitch, it's mostly generation.
-    
-    return f"Please generate an elevator pitch for {company_name}. Key JD points: {job_description}"
+    context = ""
+    if not cv_text.startswith("Error"):
+        context += f"\nCV Content:\n{cv_text}\n"
+    if not resume_text.startswith("Error"):
+        context += f"\nResume Content:\n{resume_text}\n"
+        
+    return f"Please generate an elevator pitch for {company_name}. Key JD points: {job_description}. \n\nMy Background Context:\n{context}"
 
 
 def company_brief_tool(company_name: str):
@@ -1583,41 +1573,6 @@ async def generate_cover_letter(
             )
         "Cover letter generated successfully!
         Word: cover_letters/Google_ML_Engineer_2025-11-24.docx
-        PDF: cover_letters/Google_ML_Engineer_2025-11-24.pdf"
-    """
-    # Validate output format
-    valid_formats = ["docx", "pdf", "both"]
-    if output_format not in valid_formats:
-        return f"Error: Invalid output_format '{output_format}'. Must be one of: {', '.join(valid_formats)}"
-    
-    # Create cover_letters directory if it doesn't exist
-    if not os.path.exists(COVER_LETTERS_FOLDER):
-        os.makedirs(COVER_LETTERS_FOLDER)
-    
-    # Read CV
-    cv_text = read_document(cv_filename)
-    if cv_text.startswith("Error:") or cv_text.startswith("Failed"):
-        return f"Failed to read CV: {cv_text}"
-    
-    # Prepare LLM prompt
-    prompt = f"""You are a professional cover letter writer. Generate a compelling, personalized cover letter.
-
-CANDIDATE CV:
-{cv_text}
-
-JOB DETAILS:
-Company: {company_name}
-Position: {position_title}
-Description: {job_description}
-
-INSTRUCTIONS:
-- Write a professional business cover letter
-- Match the candidate's experience to job requirements
-- Highlight 3-4 most relevant skills and achievements from the CV
-- Keep it concise (300-400 words, 3-4 paragraphs)
-- Use a professional but engaging tone
-- Include specific examples from the CV that match job requirements
-- End with a clear call to action
 - DO NOT include placeholder text like [Your Name], [Date], [Company Address] - just write the body paragraphs
 - Start directly with the salutation "Dear Hiring Manager," or similar
 

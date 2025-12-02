@@ -217,10 +217,10 @@ root_agent = LlmAgent(
     - tailoring a cover letter or email based on their background
     - writing job applications that depend on their qualifications
 
-    → You MUST call the read_document tool **before answering**.
-
-    Use exactly:
-    {"filename": "Professional Curriculum Vitae.docx"}
+    → You MUST call the read_document tool **twice** (once for each file) **before answering**.
+    
+    1. {"filename": "Professional Curriculum Vitae.docx"}
+    2. {"filename": "Resume.docx"}
 
     After receiving the text:
     - Treat the CV as the single source of truth.
