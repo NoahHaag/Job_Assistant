@@ -53,24 +53,32 @@ def main():
         print(f"\n🔎 Search {i}/{len(JOB_SEARCHES)}: {search['query']} - {search['location']}")
         print("-" * 60)
         
-        result = search_jobs(
-            query=search["query"],
-            location=search["location"],
-            date_posted=search.get("date_posted", "week"),
-            max_results=10,
-            usage_limit=95,
-            save_results=True
-        )
-        
-        # Check for warnings/errors
-        if result.get("warning"):
-            all_warnings.append(result["warning"])
-            print(f"⚠️  {result['warning']}")
+        try:
+            result = search_jobs(
+                query=search["query"],
+                location=search["location"],
+                date_posted=search.get("date_posted", "week"),
+                max_results=10,
+                usage_limit=95,
+                save_results=True
+            )
             
-            # If usage limit reached, stop searching
-            if "Usage limit reached" in result["warning"]:
-                print("\n🛑 Stopping job search - usage limit reached.")
-                break
+            # Debug: Print raw result keys
+            # print(f"DEBUG: Result keys: {result.keys()}")
+            
+            # Check for warnings/errors
+            if result.get("warning"):
+                all_warnings.append(result["warning"])
+                print(f"⚠️  {result['warning']}")
+                
+                # If usage limit reached, stop searching
+                if "Usage limit reached" in result["warning"]:
+                    print("\n🛑 Stopping job search - usage limit reached.")
+                    break
+        except Exception as e:
+            print(f"❌ Error in search {i}: {e}")
+            all_warnings.append(f"Search {i} failed: {e}")
+            continue
         
         # Report results
         new_count = result.get("new_jobs_count", 0)

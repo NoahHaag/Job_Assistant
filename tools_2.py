@@ -1638,6 +1638,81 @@ Generate the cover letter now (body paragraphs only):"""
 cover_letter_generator_tool = FunctionTool(func=generate_cover_letter)
 
 
+async def interview_prep_master(company_name: str, role_title: str = "Candidate"):
+    """
+    Generate a comprehensive interview preparation guide using LLM and CV context.
+    
+    Args:
+        company_name (str): Name of the company.
+        role_title (str): Title of the role (optional).
+        
+    Returns:
+        str: Success message with path to the generated prep doc.
+    """
+    # Create prep directory
+    prep_dir = os.path.join(os.getcwd(), "interview_prep")
+    if not os.path.exists(prep_dir):
+        os.makedirs(prep_dir)
+        
+    # Read CV and Resume
+    cv_text = read_document("Professional Curriculum Vitae.docx")
+    resume_text = read_document("Resume.docx")
+    
+    context = ""
+    if not cv_text.startswith("Error"):
+        context += f"\nCV Content:\n{cv_text}\n"
+    if not resume_text.startswith("Error"):
+        context += f"\nResume Content:\n{resume_text}\n"
+        
+    if not context:
+        return "Error: Could not read CV or Resume for context."
+
+    prompt = f"""
+    You are an expert Interview Coach. Prepare a strategic interview preparation guide for {company_name}.
+    
+    CANDIDATE CONTEXT:
+    {context}
+    
+    TARGET ROLE: {role_title}
+    
+    TASK:
+    Generate a "Strategic Interview Prep Doc" in Markdown format.
+    
+    STRUCTURE:
+    1. 🏢 **Company Strategy & Culture** (Infer from company name - mission, values, recent focus)
+    2. 🎯 **The "Why Us?" Answer** (Connect candidate's specific background to the company)
+    3. ❓ **Likely Technical Questions** (Based on candidate's skills vs company domain)
+    4. 🗣️ **Behavioral Stories** (STAR method prompts based on candidate's actual history)
+    5. 🧠 **3 "Killer" Questions to Ask Them** (Strategic questions that show deep insight)
+    
+    Keep it actionable, concise, and empowering.
+    """
+    
+    try:
+        from google.adk.models.lite_llm import LiteLlm
+        llm = LiteLlm(model="ollama_chat/llama3.2")
+        
+        print(f"Generating interview prep for {company_name}...")
+        response = await llm.generate_content(prompt)
+        content = response.text.strip()
+        
+        # Save to file
+        safe_name = company_name.replace(" ", "_").replace("/", "-")
+        filename = f"Prep_{safe_name}_{datetime.now().strftime('%Y-%m-%d')}.md"
+        filepath = os.path.join(prep_dir, filename)
+        
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(content)
+            
+        return f"✅ Interview Prep Guide generated: {filepath}"
+        
+    except Exception as e:
+        return f"Error generating prep guide: {str(e)}"
+
+
+interview_prep_tool = FunctionTool(func=interview_prep_master)
+
+
 def read_document(filename: str = "Professional Curriculum Vitae.docx"):
     """
     Reads a document (PDF or Word) from the local 'documents' folder and returns its text content.

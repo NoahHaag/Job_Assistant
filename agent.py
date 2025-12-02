@@ -480,12 +480,12 @@ root_agent = LlmAgent(
         job_opportunities_query_tool,
         serpapi_usage_tool,
         job_opportunity_delete_tool,
-        job_opportunity_delete_tool,
         google_scholar_tool,
         elevator_pitch_tool,
         company_brief_tool,
         qr_code_tool,
-        portfolio_export_tool
+        portfolio_export_tool,
+        interview_prep_tool
     ],
     generate_content_config=types.GenerateContentConfig(
     temperature=0.1,
