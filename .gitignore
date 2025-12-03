@@ -1,6 +1,7 @@
 .env
 token.json
 credentials.json
+serviceAccountKey.json
 __pycache__/
 .venv/
 *.pyc
