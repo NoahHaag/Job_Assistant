@@ -1020,7 +1020,8 @@ def search_jobs_serpapi(
     }
     
     try:
-        response = requests.get(url, params=params, timeout=10)
+        # Increased timeout for broad location searches (e.g., "United States") which can be slower
+        response = requests.get(url, params=params, timeout=30)
         response.raise_for_status()
         results = response.json()
         

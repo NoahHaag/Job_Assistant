@@ -16,20 +16,23 @@ from datetime import datetime
 from tools_2 import search_jobs, get_serpapi_usage_report
 
 # Configure your job searches here
+# NOTE: SerpAPI does not support "Remote" as a location parameter or "State, Country" format
+# For remote jobs, use a broad location like "United States" and add "Remote" to the query
+# Valid location examples: "Florida", "United States", "New York", "California"
 JOB_SEARCHES = [
     {
         "query": "Marine Scientist",
-        "location": "Florida, USA",
+        "location": "Florida",  # Changed from "Florida, USA" - SerpAPI doesn't support "State, Country" format
         "date_posted": "week"
     },
     {
-        "query": "Research Marine Biologist",
-        "location": "Remote",
+        "query": "Research Marine Biologist Remote",  # Added "Remote" to query instead of location
+        "location": "United States",  # Changed from "Remote" - not a valid location parameter
         "date_posted": "week"
     },
     {
-        "query": "Machine Learning Engineer (Computational Biology/Ecology)",
-        "location": "Remote",
+        "query": "Machine Learning Engineer (Computational Biology/Ecology) Remote",  # Added "Remote" to query
+        "location": "United States",  # Changed from "Remote" - not a valid location parameter
         "date_posted": "week"
     }
 ]
