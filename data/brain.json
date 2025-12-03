@@ -12,11 +12,11 @@
         },
         "technical_challenge": {
             "prompt": "Describe a difficult technical problem you solved.",
-            "story": "STAR Method: In the 'Agent V2' project, I struggled with high latency in API responses. I researched asynchronous programming and refactored the tool execution layer using Python's asyncio (Action). This reduced the agent's response time from 10 seconds to under 3 seconds (Result)."
+            "story": "STAR Method: In my 'Agent V2' project, I needed to integrate multiple distinct tools (Gmail, Job Search, Resume Updates) into a single autonomous loop. The initial single-threaded approach was too slow and brittle. I architected a new tool execution layer using Python functions as tool for the Gemini 2.0 model, allowing the agent to dynamically select and execute tools in parallel. This not only improved performance but allowed the agent to 'reason' through complex multi-step tasks autonomously."
         },
-             "conflict_resolution": {
-                   "prompt": "Tell me about a disagreement with a colleague.",
-     "story": "STAR Method: During a collaborative research project, a team member wanted to use Excel for data analysis while I advocated for R. I demonstrated a quick prototype in R showing how it could automate our weekly reporting (Action). The team adopted R, saving us 5 hours of manual entry per week (Result)."
+        "conflict_resolution": {
+            "prompt": "Tell me about a disagreement with a colleague.",
+            "story": "Certainly. A professional disagreement that comes to mind occurred during my time as a Marine Ecology Research Technician with the Kimbro Lab, specifically during our meta-analysis on Artificial Reef Units. The situation involved me leading the data synthesis, where a critical inclusion criterion for papers was the presence of a 'soft-bottom control.' My colleague, David Kimbro, and I had differing interpretations of this. I initially considered papers with any 'non-natural reef control' sufficient, but David insisted on a stricter interpretation, requiring explicit mention of 'soft-bottom control.' To objectively resolve this, I took the initiative to re-run all relevant analyses, meticulously redoing all figures and statistical tables to present two distinct sets of results: one with broader 'non-natural reef controls' and another strictly adhering to papers explicitly stating 'soft-bottom control.' After reviewing the comparative results, we collectively decided to adopt David's more stringent definition, removing papers that did not explicitly state 'soft-bottom control.' While this meant additional work and a slight reduction in our dataset, it ultimately strengthened the methodological rigor and defensibility of our meta-analysis. This experience reinforced for me the importance of precise definitions in scientific research and the value of thorough, data-driven discussions to ensure the highest quality of work."
         },
         "failure": {
             "prompt": "Tell me about a time you failed.",
