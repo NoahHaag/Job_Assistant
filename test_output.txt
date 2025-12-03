@@ -1,0 +1,12 @@
+﻿[WARNING] Gmail tools not available: ('invalid_grant: Token has been expired or revoked.', {'error': 'invalid_grant', 'error_description': 'Token has been expired or revoked.'})
+[INFO] Agent will run without Gmail functionality
+--- Testing Locations ---
+Testing location: 'Florida'
+Γ¥î Failed: SerpAPI request failed: HTTPSConnectionPool(host='serpapi.com', port=443): Read timed out. (read timeout=10)
+Testing location: 'United States'
+Γ¥î Failed: SerpAPI request failed: HTTPSConnectionPool(host='serpapi.com', port=443): Read timed out. (read timeout=10)
+Testing location: 'Remote'
+Γ¥î Failed: SerpAPI request failed: 400 Client Error: Bad Request for url: https://serpapi.com/search?engine=google_jobs&q=Marine+Scientist&location=Remote&api_key=aab7e0678d4a0a0f6de2023d4841d90d1fbf32d614c850e9cf8e9432c6e9df9a&chips=date_posted%3Atoday&num=10
+Response: {
+  "error": "Unsupported `Remote` location - location parameter."
+}

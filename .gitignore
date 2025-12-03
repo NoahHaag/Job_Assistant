@@ -5,7 +5,7 @@ __pycache__/
 .venv/
 *.pyc
 agent_scratchpad.txt
-documents/
+# documents/
 cover_letters/
 # job_applications.json - Tracked for Auto-Sync
 my_agent_data.db
