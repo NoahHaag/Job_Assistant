@@ -1042,7 +1042,10 @@ def search_jobs_serpapi(
     except requests.exceptions.HTTPError as e:
         error_msg = f"SerpAPI request failed: {str(e)}"
         if e.response is not None:
-            error_msg += f"\nResponse: {e.response.text}"
+            try:
+                error_msg += f"\nResponse: {e.response.text}"
+            except:
+                error_msg += "\nResponse: (could not decode response text)"
         return {"error": error_msg}
     except requests.exceptions.RequestException as e:
         return {"error": f"SerpAPI request failed: {str(e)}"}
