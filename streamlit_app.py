@@ -36,8 +36,9 @@ def load_resume_content():
         return None
     return text
 
+@st.cache_resource
 def get_gemini_client():
-    """Initializes the Gemini client."""
+    """Initializes the Gemini client. Cached so it persists."""
     api_key = os.getenv("GOOGLE_API_KEY")
     # Check Streamlit secrets if env var not found (for cloud deployment)
     if not api_key and "GOOGLE_API_KEY" in st.secrets:
@@ -53,7 +54,9 @@ st.title("Talk to Noah's Resume 🤖")
 st.markdown("Ask questions about my experience, skills, or background.")
 
 # Initialize Client
+# We use cache_resource above, so this doesn't re-instantiate the client object repeatedly
 client = get_gemini_client()
+
 if not client:
     st.warning("Please set your GOOGLE_API_KEY in the environment or Streamlit secrets.")
     st.stop()
@@ -64,10 +67,11 @@ if not resume_text:
     st.error("Could not load resume content. Please ensure public/Resume.pdf exists.")
     st.stop()
 
-# Initialize Chat History
+# Initialize Session State
 if "messages" not in st.session_state:
     st.session_state.messages = []
-    
+
+if "chat_session" not in st.session_state:
     # System Prompt Injection (Hidden from UI)
     system_instruction = f"""You are a helpful assistant representing Noah Haag.
     You have access to Noah's resume context below.
@@ -99,6 +103,7 @@ if prompt := st.chat_input("Ask me anything..."):
 
     # Generate Response
     try:
+        # We use the session_state chat object which persists across reruns
         response = st.session_state.chat_session.send_message(prompt)
         
         # Add assistant message to UI
@@ -108,4 +113,7 @@ if prompt := st.chat_input("Ask me anything..."):
         st.session_state.messages.append({"role": "assistant", "content": response.text})
         
     except Exception as e:
+        # If the session somehow died (e.g. timeout), we can try to recover or just show error
         st.error(f"An error occurred: {e}")
+        # Optional: Force a reload of the page if critical
+        # st.rerun()
