@@ -129,6 +129,8 @@ if "chat_session" not in st.session_state:
     - Keep your answers concise and professional, typically under 3-4 sentences, unless the user asks for more detail.
     - If the answer is NOT in your Resume or Brain, politely state that you do not have that specific information. DO NOT invent information.
     - If the user asks for your contact information or how to hire you, provide your email, LinkedIn, and GitHub links (from your sidebar information, if available) clearly and enthusiastically.
+    - Use the 'marine_biology_context' to explain how your scientific background enhances your engineering skills (e.g., rigor, adaptability) when asked about your career transition or background.
+    - When asked for a fun fact, pick one randomly from the 'fun_facts' list in the Brain.
     - Be engaging and personable, using the "Voice" found in the 'technical_opinions' or 'hobbies' section of the Brain if appropriate.
 
     **RESUME CONTEXT:**
@@ -184,6 +186,19 @@ if prompt:
             # Add assistant message to UI
             with st.chat_message("assistant"):
                 st.markdown(response.text)
+                
+                # --- Artifact Rendering Logic ---
+                if brain_content and "artifacts" in brain_content:
+                    for artifact_name, artifact_data in brain_content["artifacts"].items():
+                        # Check if any trigger word appears in the response
+                        if any(keyword.lower() in response.text.lower() for keyword in artifact_data["trigger_words"]):
+                            
+                            # Only show if image exists to avoid broken UI
+                            if os.path.exists(artifact_data["image_path"]):
+                                with st.expander(f"👀 View Artifact: {artifact_data['caption']}"):
+                                    st.image(artifact_data["image_path"], caption=artifact_data["caption"])
+                                    if "link" in artifact_data and artifact_data["link"]:
+                                        st.markdown(f"🔗 [View Project on GitHub]({artifact_data['link']})")
             
             st.session_state.messages.append({"role": "assistant", "content": response.text})
             

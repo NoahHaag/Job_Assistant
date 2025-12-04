@@ -5,6 +5,21 @@
         "citizenship": "US Citizen, no sponsorship required.",
         "salary_expectations": "I am targeting roles in the $90k - $120k range, depending on the total compensation package and benefits."
     },
+    "career_preferences": {
+        "ideal_environment": "I thrive in collaborative, fast-paced environments where I can take ownership of features. I value mentorship and code reviews, but I also enjoy the autonomy to research and prototype new solutions.",
+        "current_learning": "Currently, I am diving deep into Agentic workflows and Multimodal RAG systems. I'm also improving my knowledge of Cloud Architecture (AWS/GCP) to better deploy the agents I build.",
+        "elevator_pitch": "I am a Marine Biologist turned Data Scientist, bringing 8 years of scientific rigor to software engineering. My background leading field teams in high-risk underwater environments taught me adaptability and precision, while my graduate research gave me the statistical foundation to handle messy, real-world data. I don't just write code; I apply the scientific method to build reliable, data-driven systems."
+    },
+    "marine_biology_context": {
+        "research_focus": "My M.S. research focused on the meta-analysis of Artificial Reefs, using R and ArcGIS to synthesize complex spatial data. This required cleaning and harmonizing disparate datasets from decades of literature—a perfect training ground for modern Data Science.",
+        "fieldwork_resilience": "As an AAUS Scientific Diver and Research Technician, I managed logistics and safety for offshore expeditions. This experience honed my ability to plan for 'edge cases' and stay calm under pressure—skills that translate directly to handling production incidents in tech.",
+        "transferable_skills": [
+            "Hypothesis-Driven Debugging (The Scientific Method)",
+            "Managing 'Messy' Real-World Data",
+            "Project Management in Unpredictable Environments",
+            "Technical Communication to Non-Technical Stakeholders"
+        ]
+    },
     "behavioral_stories": {
              "leadership": {
                    "prompt": "Tell me about a time you led a team.",
@@ -29,6 +44,30 @@
     },
     "hobbies_and_personality": {
         "hobbies": "Outside of coding, I am an avid SCUBA diver (Master Diver) and volunteer as a Conservation Commissioner. I love complex systems, whether they are underwater ecosystems or distributed software architectures.",
-        "fun_fact": "I have logged over 100 dives. I was once a balloon holder for the Macy's Thanksgiving Day Parade."
+        "fun_facts": [
+            "I was once a balloon holder for the Macy's Thanksgiving Day Parade.",
+            "I have logged over 100 dives, including research dives in zero-visibility conditions.",
+            "I taught myself Python initially to analyze marine ecological data better than Excel allowed."
+        ]
+    },
+    "artifacts": {
+        "agent_v2": {
+            "trigger_words": ["agent v2", "autonomous loop", "tool execution", "agent architecture", "gemini"],
+            "image_path": "public/agent_v2_visual.png",
+            "caption": "Architecture concept of my Agent V2, handling parallel tool execution.",
+            "link": "https://github.com/NoahHaag/Agent_V2"
+        },
+        "meta_analysis_map": {
+            "trigger_words": ["gis", "spatial data", "locations", "global study", "arcgis", "map"],
+            "image_path": "public/study_map.png",
+            "caption": "Global distribution of studies synthesized in my meta-analysis (ArcGIS output).",
+            "link": "https://github.com/NoahHaag/Reef-Analysis"
+        },
+        "reef_context": {
+            "trigger_words": ["artificial reef", "kimbro lab", "scuba", "fieldwork", "diving", "underwater", "environment"],
+            "image_path": "public/reef_context.png",
+            "caption": "The complex underwater environment of Artificial Reefs.",
+            "link": "https://github.com/NoahHaag/Reef-Analysis"
+        }
     }
 }
