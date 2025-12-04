@@ -60,14 +60,12 @@
         "meta_analysis_map": {
             "trigger_words": ["gis", "spatial data", "locations", "global study", "arcgis", "map"],
             "image_path": "public/study_map.png",
-            "caption": "Global distribution of studies synthesized in my meta-analysis (ArcGIS output).",
-            "link": "https://github.com/NoahHaag/Reef-Analysis"
+            "caption": "Global distribution of studies synthesized in my meta-analysis (ArcGIS output)."
         },
         "reef_context": {
             "trigger_words": ["artificial reef", "kimbro lab", "scuba", "fieldwork", "diving", "underwater", "environment"],
             "image_path": "public/reef_context.png",
-            "caption": "The complex underwater environment of Artificial Reefs.",
-            "link": "https://github.com/NoahHaag/Reef-Analysis"
+            "caption": "The complex underwater environment of Artificial Reefs."
         }
     }
 }
