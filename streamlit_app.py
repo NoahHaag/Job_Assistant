@@ -190,8 +190,9 @@ if prompt:
                 # --- Artifact Rendering Logic ---
                 if brain_content and "artifacts" in brain_content:
                     for artifact_name, artifact_data in brain_content["artifacts"].items():
-                        # Check if any trigger word appears in the response
-                        if any(keyword.lower() in response.text.lower() for keyword in artifact_data["trigger_words"]):
+                        # Check if any trigger word appears in the response OR the user's prompt
+                        if any(keyword.lower() in response.text.lower() for keyword in artifact_data["trigger_words"]) or \
+                           any(keyword.lower() in prompt.lower() for keyword in artifact_data["trigger_words"]):
                             
                             # Only show if image exists to avoid broken UI
                             if os.path.exists(artifact_data["image_path"]):
