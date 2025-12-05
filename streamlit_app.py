@@ -73,9 +73,9 @@ with st.sidebar:
     st.title("Noah Haag")
     st.markdown("---")
     st.subheader("Connect with me:")
-    st.markdown("📧 [Your Email](mailto:youremail@example.com)") # UPDATE THIS
-    st.markdown("👔 [LinkedIn Profile](https://www.linkedin.com/in/yourprofile)") # UPDATE THIS
-    st.markdown("🐙 [GitHub Profile](https://github.com/yourusername)") # UPDATE THIS
+    st.markdown("📧 [Your Email](mailto:noahhaag1998@gmail.com)") # UPDATE THIS
+    st.markdown("👔 [LinkedIn Profile](https://www.linkedin.com/in/noah-haag-961691161/)") # UPDATE THIS
+    st.markdown("🐙 [GitHub Profile](https://github.com/NoahHaag)") # UPDATE THIS
     st.markdown("---")
     
     if os.path.exists(RESUME_PATH):
