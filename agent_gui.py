@@ -6,6 +6,10 @@ import asyncio
 import threading
 import re
 import os
+import wave
+import pyaudio
+import whisper
+import tempfile
 from pypdf import PdfReader
 from google.genai import types
 from agent import runner, memory_service, get_or_create_session
@@ -86,6 +90,19 @@ class AgentGUI(TkinterDnD_CTk):
         self.user_input.bind("<Return>", self.on_enter_pressed)
         self.user_input.bind("<Shift-Return>", lambda e: None)
 
+        # Microphone Button
+        self.mic_btn = ctk.CTkButton(
+            self.input_frame, 
+            text="🎤", 
+            command=self.toggle_recording, 
+            width=50,
+            height=80,
+            font=("Segoe UI", 20),
+            fg_color="#3c3f41",
+            hover_color="#4a90e2"
+        )
+        self.mic_btn.grid(row=0, column=1, sticky="ns", padx=(0, 5))
+        
         # Send Button
         self.send_btn = ctk.CTkButton(
             self.input_frame, 
@@ -95,7 +112,11 @@ class AgentGUI(TkinterDnD_CTk):
             height=80,
             font=("Segoe UI", 12, "bold")
         )
-        self.send_btn.grid(row=0, column=1, sticky="ns")
+        self.send_btn.grid(row=0, column=2, sticky="ns")
+        
+        # Recording state
+        self.is_recording = False
+        self.whisper_model = None
 
         # Status Bar
         self.status_var = tk.StringVar(value="Initializing...")
@@ -166,6 +187,172 @@ class AgentGUI(TkinterDnD_CTk):
             except Exception as e:
                 self.update_status(f"Error reading file: {e}")
                 self.append_message("System", f"Error reading file {file_path}: {e}")
+
+    def toggle_recording(self):
+        """Toggle audio recording on/off."""
+        if not self.is_recording:
+            self.start_recording()
+        else:
+            self.stop_recording()
+    
+    def start_recording(self):
+        """Start recording audio."""
+        self.is_recording = True
+        self.mic_btn.configure(fg_color="#e06c75", text="⏹")
+        self.update_status("Recording... Click mic again to stop")
+        
+        # Run recording in background thread
+        threading.Thread(target=self.record_audio, daemon=True).start()
+    
+    def stop_recording(self):
+        """Stop recording audio."""
+        self.is_recording = False
+        self.mic_btn.configure(fg_color="#3c3f41", text="\ud83c\udfa4")
+        self.update_status("Processing audio...")
+    
+    def record_audio(self):
+        """Record audio from microphone."""
+        CHUNK = 1024
+        FORMAT = pyaudio.paInt16
+        CHANNELS = 1
+        RATE = 16000
+        
+        p = pyaudio.PyAudio()
+        
+        # List available devices for debugging
+        print("\nAvailable audio devices:")
+        for i in range(p.get_device_count()):
+            info = p.get_device_info_by_index(i)
+            if info['maxInputChannels'] > 0:
+                print(f"  {i}: {info['name']}")
+        
+        # Try to use Realtek Microphone Array
+        device_index = None
+        for i in range(p.get_device_count()):
+            info = p.get_device_info_by_index(i)
+            if 'Microphone Array' in info['name'] and 'Realtek' in info['name'] and info['maxInputChannels'] > 0:
+                device_index = i
+                print(f"\nUsing device {i}: {info['name']}")
+                break
+        
+        if device_index is None:
+            # Use default
+            print("\nUsing default microphone")
+        
+        try:
+            stream = p.open(format=FORMAT,
+                           channels=CHANNELS,
+                           rate=RATE,
+                           input=True,
+                           input_device_index=device_index,
+                           frames_per_buffer=CHUNK)
+        except Exception as e:
+            self.schedule_ui_update(self.update_status, f"Microphone error: {e}")
+            p.terminate()
+            self.is_recording = False
+            self.mic_btn.configure(fg_color="#3c3f41", text="\ud83c\udfa4")
+            return
+        
+        frames = []
+        duration = 0
+        max_amplitude = 0
+        
+        while self.is_recording:
+            try:
+                data = stream.read(CHUNK, exception_on_overflow=False)
+                frames.append(data)
+                duration += CHUNK / RATE
+                
+                # Check audio level
+                import numpy as np
+                audio_chunk = np.frombuffer(data, dtype=np.int16)
+                amplitude = np.abs(audio_chunk).max()
+                max_amplitude = max(max_amplitude, amplitude)
+                
+                # Update status with duration and level
+                level_bar = "█" * min(int(amplitude / 3000), 10)
+                self.schedule_ui_update(self.update_status, f"Recording {duration:.1f}s [{level_bar}]")
+            except Exception as e:
+                print(f"Recording error: {e}")
+                break
+        
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+        
+        print(f"\nMax audio amplitude: {max_amplitude} (should be > 1000 for speech)")
+        
+        if len(frames) == 0:
+            self.schedule_ui_update(self.update_status, "No audio recorded")
+            return
+        
+        if max_amplitude < 100:
+            self.schedule_ui_update(self.update_status, "Audio too quiet - check microphone!")
+            return
+        
+        # Save to temporary file
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+        wf = wave.open(temp_file.name, 'wb')
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(p.get_sample_size(FORMAT))
+        wf.setframerate(RATE)
+        wf.writeframes(b''.join(frames))
+        wf.close()
+        
+        print(f"Recorded {duration:.1f}s of audio to {temp_file.name}")
+        
+        # Transcribe in background
+        threading.Thread(target=self.transcribe_audio, args=(temp_file.name,), daemon=True).start()
+    
+    def transcribe_audio(self, audio_file):
+        """Transcribe audio using Whisper."""
+        try:
+            # Load model on first use
+            if self.whisper_model is None:
+                self.schedule_ui_update(self.update_status, "Loading Whisper model...")
+                self.whisper_model = whisper.load_model("tiny")
+            
+            # Load audio directly from WAV file (bypass ffmpeg)
+            print(f"Transcribing {audio_file}...")
+            import numpy as np
+            
+            # Read WAV file directly
+            with wave.open(audio_file, 'rb') as wf:
+                frames = wf.readframes(wf.getnframes())
+                audio_data = np.frombuffer(frames, dtype=np.int16).astype(np.float32) / 32768.0
+            
+            # Transcribe using the audio array directly
+            result = self.whisper_model.transcribe(audio_data,
+             fp16=False,
+             language="en",
+             temperature=0.0,
+             beam_size=5,
+             initial_prompt="Job interview practice session.",
+             without_timestamps=True,
+             condition_on_previous_text=True, 
+             no_speech_threshold=0.6,
+             word_timestamps=False) 
+            print(f"Whisper result: {result}")
+            text = result["text"].strip()
+            print(f"Extracted text: '{text}' (length: {len(text)})")
+            
+            # Insert into input box
+            if text:
+                self.schedule_ui_update(lambda: self.user_input.insert("end", text + " "))
+                self.schedule_ui_update(self.update_status, "Transcription complete!")
+            else:
+                self.schedule_ui_update(self.update_status, "No speech detected")
+        except Exception as e:
+            print(f"Transcription exception: {e}")
+            import traceback
+            traceback.print_exc()
+            self.schedule_ui_update(self.update_status, f"Transcription error: {e}")
+        finally:
+            # Clean up temp file
+            try:
+                os.unlink(audio_file)
+            except:
+                pass
 
     def on_enter_pressed(self, event):
         if event.state & 0x0001: 
