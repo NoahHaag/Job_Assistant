@@ -19,8 +19,8 @@ load_dotenv()
 
 # Constants
 MODEL_ID = "gemini-2.0-flash-001"
-BACKUP_MODELS = ["gemini-1.5-flash", "gemini-1.5-pro"]
-GROQ_MODEL = "llama3-70b-8192"
+BACKUP_MODELS = ["gemini-1.5-flash-002", "gemini-1.5-pro-002"]
+GROQ_MODEL = "llama-3.3-70b-versatile"
 RESUME_PATH = "public/Resume.pdf"
 PROFILE_PHOTO_PATH = "public/profile.png" # Assuming a PNG, change if JPG
 BRAIN_PATH = "data/brain.json"
