@@ -72,12 +72,12 @@ with st.sidebar:
     if os.path.exists(PROFILE_PHOTO_PATH):
         st.image(PROFILE_PHOTO_PATH, use_column_width=True)
     st.title("Noah Haag")
-    st.markdown("--- ")
+    st.markdown("---")
     st.subheader("Connect with me:")
     st.markdown("📧 [Your Email](mailto:noahhaag1998@gmail.com)") # UPDATE THIS
     st.markdown("👔 [LinkedIn Profile](https://www.linkedin.com/in/noah-haag-961691161/)") # UPDATE THIS
     st.markdown("🐙 [GitHub Profile](https://github.com/NoahHaag)") # UPDATE THIS
-    st.markdown("--- ")
+    st.markdown("---")
     
     if os.path.exists(RESUME_PATH):
         with open(RESUME_PATH, "rb") as file:
@@ -114,7 +114,7 @@ else:
     brain_text = json.dumps(brain_content, indent=2)
 
 # System Prompt Injection (Hidden from UI)
-system_instruction = f"""You are Noah Haag. Your goal is to represent yourself based on the provided context.
+system_instruction = f"""You are Noah Haag. Your goal is to represent yourself based on the provided context. 
 
 You have access to two sources of information:
 1. **RESUME CONTEXT**: Your official professional history. Prioritize this for factual questions about dates, roles, and hard skills.
