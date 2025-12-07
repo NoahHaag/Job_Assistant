@@ -185,89 +185,93 @@ if prompt:
             # We use the session_state chat object which persists across reruns
             response = st.session_state.chat_session.send_message(prompt)
         except Exception as e:
-            # Error handling with fallback logic
+            # BROAD ERROR HANDLING: Catch 429 (Rate Limit), 404 (Not Found), 500, etc.
+            # If ANY error happens, we try backups, then fallback to offline.
             error_msg = str(e)
-            if "429" in error_msg or "Resource exhausted" in error_msg:
-                success_fallback = False
-                for model in BACKUP_MODELS:
-                    try:
-                        # Re-create session with new model and existing history
-                        formatted_history = []
-                        for msg in st.session_state.messages:
-                            role = "model" if msg["role"] == "assistant" else "user"
-                            formatted_history.append(types.Content(role=role, parts=[types.Part(text=msg["content"])]))
-                        
-                        st.warning(f"Primary model rate limited. Switching to backup: {model}...")
-                        st.session_state.chat_session = client.chats.create(
-                            model=model,
-                            config=types.GenerateContentConfig(
-                                system_instruction=system_instruction,
-                                temperature=0.7,
-                            ),
-                            history=formatted_history
-                        )
-                        # Retry message
-                        response = st.session_state.chat_session.send_message(prompt)
-                        success_fallback = True
-                        break # Stop loop if successful
-                    except Exception as fallback_e:
-                        continue # Try next backup
+            print(f"Primary model failed: {error_msg}") # Log to console for debugging
 
-                if not success_fallback:
-                    # --- EMERGENCY OFFLINE MODE ---
-                    st.toast("⚠️ API Rate Limit Reached. Switching to Offline Mode.", icon="📡")
+            success_fallback = False
+            for model in BACKUP_MODELS:
+                try:
+                    # Re-create session with new model and existing history
+                    formatted_history = []
+                    for msg in st.session_state.messages:
+                        role = "model" if msg["role"] == "assistant" else "user"
+                        formatted_history.append(types.Content(role=role, parts=[types.Part(text=msg["content"])]))
                     
-                    def get_fallback_response(query, resume_txt, brain_data):
-                        query = query.lower()
-                        
-                        # 1. Direct Intent Matching (Fast & Free)
-                        if "contact" in query or "email" in query or "reach" in query:
-                            return "You can reach me via:\n- **Email**: noahhaag1998@gmail.com\n- **LinkedIn**: [Profile](https://www.linkedin.com/in/noah-haag-961691161/)\n- **GitHub**: [NoahHaag](https://github.com/NoahHaag)"
-                        
-                        if "skill" in query or "stack" in query:
-                             # Try to extract skills from Brain or Resume
-                             if isinstance(brain_data, dict) and "skills" in brain_data:
-                                 return f"**My Key Skills:**\n{json.dumps(brain_data['skills'], indent=2)}"
-                             return "I have experience with Python, AI/ML, Streamlit, and Data Analysis. (Check my resume for the full list!)"
-                             
-                        if "education" in query or "university" in query or "degree" in query:
-                            # Simple extraction heuristic
-                            return "I have a background in Marine Biology and Computer Science. Please download my resume for the full education history."
-
-                        # 2. Keyword Search (Vector-lite)
-                        # Split resume into paragraphs
-                        paragraphs = [p.strip() for p in resume_txt.split('\n') if len(p.strip()) > 20]
-                        query_words = set(query.split())
-                        
-                        best_match = None
-                        best_score = 0
-                        
-                        for p in paragraphs:
-                            score = sum(1 for w in query_words if w in p.lower())
-                            if score > best_score:
-                                best_score = score
-                                best_match = p
-                        
-                        if best_match and best_score > 0:
-                            return f"*(Offline Mode)* Here is something relevant from my resume:\n\n> {best_match}"
-                        
-                        return "I'm currently experiencing high traffic and couldn't process that specific question. Please try asking about my **Skills**, **Education**, or **Contact Info**, or download my resume from the sidebar!"
-
-                    # Generate offline response
-                    offline_response_text = get_fallback_response(prompt, resume_text, brain_content)
+                    st.warning(f"Primary model unavailable. Switching to backup: {model}...")
                     
-                    # Add to chat history so it looks normal
-                    st.session_state.messages.append({"role": "assistant", "content": offline_response_text})
+                    # Create a TEMP session first. Only update state if it works.
+                    temp_session = client.chats.create(
+                        model=model,
+                        config=types.GenerateContentConfig(
+                            system_instruction=system_instruction,
+                            temperature=0.7,
+                        ),
+                        history=formatted_history
+                    )
+                    # Try sending message
+                    response = temp_session.send_message(prompt)
                     
-                    # Display
-                    with st.chat_message("assistant"):
-                        st.markdown(offline_response_text)
-                        
-                    # Stop further execution to avoid error display
-                    st.stop()
+                    # If we get here, it worked! Update session state.
+                    st.session_state.chat_session = temp_session
+                    success_fallback = True
+                    break # Stop loop if successful
+                except Exception as fallback_e:
+                    print(f"Backup model {model} failed: {fallback_e}")
+                    continue # Try next backup
 
-            else:
-                st.error(f"An error occurred: {e}")
+            if not success_fallback:
+                # --- EMERGENCY OFFLINE MODE ---
+                st.toast("⚠️ API Unavailable. Switching to Offline Mode.", icon="📡")
+                
+                def get_fallback_response(query, resume_txt, brain_data):
+                    query = query.lower()
+                    
+                    # 1. Direct Intent Matching (Fast & Free)
+                    if "contact" in query or "email" in query or "reach" in query:
+                        return "You can reach me via:\n- **Email**: noahhaag1998@gmail.com\n- **LinkedIn**: [Profile](https://www.linkedin.com/in/noah-haag-961691161/)\n- **GitHub**: [NoahHaag](https://github.com/NoahHaag)"
+                    
+                    if "skill" in query or "stack" in query:
+                            # Try to extract skills from Brain or Resume
+                            if isinstance(brain_data, dict) and "skills" in brain_data:
+                                return f"**My Key Skills:**\n{json.dumps(brain_data['skills'], indent=2)}"
+                            return "I have experience with Python, AI/ML, Streamlit, and Data Analysis. (Check my resume for the full list!)"
+                            
+                    if "education" in query or "university" in query or "degree" in query:
+                        # Simple extraction heuristic
+                        return "I have a background in Marine Biology and Computer Science. Please download my resume for the full education history."
+
+                    # 2. Keyword Search (Vector-lite)
+                    # Split resume into paragraphs
+                    paragraphs = [p.strip() for p in resume_txt.split('\n') if len(p.strip()) > 20]
+                    query_words = set(query.split())
+                    
+                    best_match = None
+                    best_score = 0
+                    
+                    for p in paragraphs:
+                        score = sum(1 for w in query_words if w in p.lower())
+                        if score > best_score:
+                            best_score = score
+                            best_match = p
+                    
+                    if best_match and best_score > 0:
+                        return f"*(Offline Mode)* Here is something relevant from my resume:\n\n> {best_match}"
+                    
+                    return "I'm currently experiencing high traffic and couldn't process that specific question. Please try asking about my **Skills**, **Education**, or **Contact Info**, or download my resume from the sidebar!"
+
+                # Generate offline response
+                offline_response_text = get_fallback_response(prompt, resume_text, brain_content)
+                
+                # Add to chat history so it looks normal
+                st.session_state.messages.append({"role": "assistant", "content": offline_response_text})
+                
+                # Display
+                with st.chat_message("assistant"):
+                    st.markdown(offline_response_text)
+                    
+                # Stop further execution to avoid error display
                 st.stop()
             
         # Add assistant message to UI (if response was successful)
