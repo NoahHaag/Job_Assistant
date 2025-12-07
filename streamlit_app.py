@@ -112,6 +112,10 @@ if not client:
     st.warning("Please set your GOOGLE_API_KEY in the environment or Streamlit secrets.")
     st.stop()
 
+if not groq_client:
+    # Diagnostic warning - remove in production if annoying, but vital for debugging now
+    st.sidebar.warning("⚠️ Groq Backup Disabled (Missing GROQ_API_KEY)")
+
 # Load Resume
 resume_text = load_resume_content()
 if not resume_text:
