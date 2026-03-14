@@ -69,6 +69,76 @@
       "notes": "Application for a seminar, not a direct job. Focus on Blue Biotechnology with LLM and Agentic AI integration.",
       "contacts": [],
       "last_updated": "2025-12-05T13:15:58.463711"
+    },
+    {
+      "id": "1d929c32",
+      "company": "MITRE",
+      "position": "Entry Level - Data Science, Artificial Intelligence, Operations Research, Math and Statistics",
+      "status": "applied",
+      "date_applied": "2025-12-08",
+      "application_deadline": "",
+      "job_description": "",
+      "cover_letter_generated": false,
+      "next_action": "",
+      "notes": "",
+      "contacts": [],
+      "last_updated": "2025-12-08T12:52:48.954142"
+    },
+    {
+      "id": "04e0c55a",
+      "company": "Boston Dynamics",
+      "position": "Senior Data Scientist",
+      "status": "applied",
+      "date_applied": "2025-12-08",
+      "application_deadline": "",
+      "job_description": "",
+      "cover_letter_generated": false,
+      "next_action": "",
+      "notes": "",
+      "contacts": [],
+      "last_updated": "2025-12-08T13:42:00.691702"
+    },
+    {
+      "id": "0bca9d9b",
+      "company": "Bureau Veritas Group",
+      "position": "AI Sustainability Consultant",
+      "status": "applied",
+      "date_applied": "2025-12-08",
+      "application_deadline": "",
+      "job_description": "",
+      "cover_letter_generated": false,
+      "next_action": "",
+      "notes": "",
+      "contacts": [],
+      "last_updated": "2025-12-08T20:43:30.858728"
+    },
+    {
+      "id": "a6adae9f",
+      "company": "NV5",
+      "position": "Statistician",
+      "status": "applied",
+      "date_applied": "2025-12-19",
+      "application_deadline": "",
+      "job_description": "",
+      "cover_letter_generated": false,
+      "next_action": "",
+      "notes": "",
+      "contacts": [],
+      "last_updated": "2025-12-19T16:36:06.314630"
+    },
+    {
+      "id": "0da1d74d",
+      "company": "Output Biosciences",
+      "position": "Machine Learning Engineer",
+      "status": "applied",
+      "date_applied": "2025-12-19",
+      "application_deadline": "",
+      "job_description": "",
+      "cover_letter_generated": false,
+      "next_action": "",
+      "notes": "",
+      "contacts": [],
+      "last_updated": "2025-12-19T16:47:44.871606"
     }
   ]
 }

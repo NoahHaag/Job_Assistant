@@ -1581,22 +1581,48 @@ async def generate_cover_letter(
                 output_format="both"
             )
         "Cover letter generated successfully!
-        Word: cover_letters/Google_ML_Engineer_2025-11-24.docx
-- DO NOT include placeholder text like [Your Name], [Date], [Company Address] - just write the body paragraphs
-- Start directly with the salutation "Dear Hiring Manager," or similar
+        Word: cover_letters/Google_ML_Engineer_2025-11-24.docx"
+    """
 
-{f"CUSTOM NOTES TO EMPHASIZE: {custom_notes}" if custom_notes else ""}
+    # 1. Read the user's CV
+    cv_text = read_document(cv_filename)
+    if cv_text.startswith("Error"):
+        return f"Failed to read CV: {cv_text}"
 
-Generate the cover letter now (body paragraphs only):"""
+    # 2. Construct the prompt
+    prompt = f"""
+    You are a professional cover letter writer. Write a compelling cover letter for {candidate_name}.
+    
+    TARGET JOB:
+    Company: {company_name}
+    Position: {position_title}
+    Description: {job_description}
+    
+    CANDIDATE CV:
+    {cv_text}
+    
+    INSTRUCTIONS:
+    - Write a professional, engaging cover letter tailored to this specific job.
+    - Highlight relevant skills from the CV that match the job description.
+    - DO NOT include placeholder text like [Your Name], [Date], [Company Address] - just write the body paragraphs.
+    - Start directly with the salutation "Dear Hiring Manager," or similar.
+    - Keep it concise (under 400 words).
+    
+    {f"CUSTOM NOTES TO EMPHASIZE: {custom_notes}" if custom_notes else ""}
+    
+    Generate the cover letter now (body paragraphs only):
+    """
 
     # Import LLM from agent module to generate cover letter
     try:
-        # Use litellm since it's already imported in the agent
-        from google.adk.models.lite_llm import LiteLlm
-        llm = LiteLlm(model="ollama_chat/llama3.2")
+        # Use litellm directly for simpler interaction
+        from litellm import acompletion
         
-        response = await llm.generate_content(prompt)
-        cover_letter_text = response.text.strip()
+        response = await acompletion(
+            model="ollama_chat/llama3.2",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        cover_letter_text = response["choices"][0]["message"]["content"].strip()
         
     except Exception as e:
         return f"Error generating cover letter with LLM: {str(e)}"
@@ -1619,12 +1645,15 @@ Generate the cover letter now (body paragraphs only):"""
     
     # Convert to PDF if requested
     if output_format in ["pdf", "both"]:
-        pdf_result = await asyncio.to_thread(_convert_to_pdf, docx_path)
-        
-        if pdf_result.endswith(".pdf"):
-            result_message += f"\nPDF Document: {pdf_result}"
-        else:
-            result_message += f"\n⚠️ {pdf_result}"
+        try:
+            pdf_result = await asyncio.to_thread(_convert_to_pdf, docx_path)
+            
+            if pdf_result.endswith(".pdf"):
+                result_message += f"\nPDF Document: {pdf_result}"
+            else:
+                result_message += f"\n⚠️ {pdf_result}"
+        except Exception as e:
+            result_message += f"\n⚠️ PDF conversion failed: {str(e)}"
     
     # Update job application tracker if this application exists
     data = _load_job_applications()

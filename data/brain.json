@@ -46,9 +46,35 @@
         "hobbies": "Outside of coding, I am an avid SCUBA diver (Master Diver) and volunteer as a Conservation Commissioner. I love complex systems, whether they are underwater ecosystems or distributed software architectures.",
         "fun_facts": [
             "I was once a balloon holder for the Macy's Thanksgiving Day Parade.",
-            "I have logged over 100 dives, including research dives in zero-visibility conditions.",
+            "I have logged over 95 dives, including research dives in zero-visibility conditions.",
             "I taught myself Python initially to analyze marine ecological data better than Excel allowed."
         ]
+    },
+    "SCUBA_experiance":{
+        "certifications":[
+            "AAUS Scientific Diving",
+            "Master Diver",
+            "Nitrox",
+            "Rescue Diver"
+        ],
+        "dive_count": 97,
+        "dive_conditions": [
+            "zero-visibility",
+            "cold water",
+            "deep water",
+            "research dives"
+        ],
+        "favorite_dive_sites": ["Looe Key National Marine Sanctuary, FL",
+        "Nahant, MA",
+        "Big Pine Key, FL"
+    ],
+    "dive_stories": [
+        {
+            "prompt": "Tell me about a time you had to deal with a difficult situation while diving.",
+            "story": "During a teaching dive in Nahant, MA, I encountered a difficult situation while diving. Some of the students had never dove in cold water before and they needed to get used to manuvering with a full 7mm wetsuit and heavy gear. I helped them get comfortable with the gear and the conditions in shallow water before we continued on to deeper water to complete the dive"
+        }
+    ]
+
     },
     "artifacts": {
         "agent_v2": {
