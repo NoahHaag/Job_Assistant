@@ -43,7 +43,7 @@
         "why_ai": "I believe AI is the next frontier for environmental science. I want to build agents that can process ecological data faster than humanly possible to aid in conservation efforts."
     },
     "hobbies_and_personality": {
-        "hobbies": "Outside of coding, I am an avid SCUBA diver (Master Diver) and volunteer as a Conservation Commissioner. I love complex systems, whether they are underwater ecosystems or distributed software architectures.",
+        "hobbies": "I am an avid SCUBA diver (Master Diver) and volunteer as a Conservation Commissioner. I love complex systems, whether they are underwater ecosystems or distributed software architectures.",
         "fun_facts": [
             "I was once a balloon holder for the Macy's Thanksgiving Day Parade.",
             "I have logged over 95 dives, including research dives in zero-visibility conditions.",
@@ -72,9 +72,35 @@
         {
             "prompt": "Tell me about a time you had to deal with a difficult situation while diving.",
             "story": "During a teaching dive in Nahant, MA, I encountered a difficult situation while diving. Some of the students had never dove in cold water before and they needed to get used to manuvering with a full 7mm wetsuit and heavy gear. I helped them get comfortable with the gear and the conditions in shallow water before we continued on to deeper water to complete the dive"
+        },
+        {
+            "prompt": "How do you handle diving with large apex predators or maintaining safety during tagging operations? (AWSC focus)",
+            "story": "I maintain strict situational awareness and adhere to established safety protocols. Safety during apex predator operations relies on clear communication with the surface, understanding animal behavior to avoid provoking defensive reactions, and ensuring all divers know emergency recall procedures. My experience includes maintaining focus in high-stress, low-visibility environments where close teamwork is essential."
+        },
+        {
+            "prompt": "Explain your understanding of AAUS dive planning and emergency management. (AAUS focus)",
+            "story": "As an AAUS Scientific Diver, my dive planning revolves around rigorous pre-dive safety checks, strict gas management, and preparing detailed Emergency Assistance Plans (EAPs) for remote locations. I am trained in oxygen administration and rescue techniques, ensuring that if an incident occurs, the team can respond methodically to stabilize the diver and coordinate with emergency services."
+        },
+        {
+            "prompt": "What is your experience with underwater survey methods and species identification in poor visibility? (MA DMF focus)",
+            "story": "I have extensive experience conducting underwater surveys, including transect and quadrat sampling, often in the challenging, low-visibility, and cold-water conditions typical of New England. I am adept at identifying local marine species under these conditions to ensure accurate data collection without compromising safety."
         }
-    ]
-
+    ],
+    "technical_knowledge": {
+        "survey_methods": ["Transect surveys", "Quadrat sampling", "Visual census", "Benthic mapping"],
+        "equipment_handling": ["Lift bags", "Underwater drill/hardware installation", "Scientific sampling gear"],
+        "safety_protocols": ["Emergency Oxygen Administration", "Neurological Assessment", "Diver rescue and extraction", "Emergency Assistance Plan (EAP) creation"],
+        "regulations": ["AAUS standards","Local marine sanctuary regulations"],
+        "species_identification": [
+            "I can identify many species from New England, Florida, and the Caribbean. Though Florida and the Caribbean are my strongest regions."
+        ]
+    }
+    },
+    "continued education":{
+        "certifications": "Currently working on a certification from google called 'Google Cloud Data Analytics'",
+        "Courses": "I am currently using Google Skills, NVDIA Deep Learning Institute and the Google Developer Program",
+        "Google Skills public profile": "This is my public profile for Google Skills: https://www.skills.google/public_profiles/1387a9ea-61e0-4e8a-9f3b-1f838c96bdf4",
+        "Google Developer Program public profile" : "This is my public profile for the Google Developer Program: https://me.developers.google.com/u/103435778384817801726"
     },
     "artifacts": {
         "agent_v2": {
