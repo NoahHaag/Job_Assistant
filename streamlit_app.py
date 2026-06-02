@@ -18,8 +18,8 @@ st.set_page_config(
 load_dotenv()
 
 # Constants
-MODEL_ID = "gemini-2.0-flash-001"
-BACKUP_MODELS = ["gemini-1.5-flash-002", "gemini-1.5-pro-002"]
+MODEL_ID = "gemini-2.0-flash-lite"
+BACKUP_MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash"]
 GROQ_MODEL = "llama-3.3-70b-versatile"
 RESUME_PATH = "documents/Resume.pdf"
 PROFILE_PHOTO_PATH = "public/profile.png" # Assuming a PNG, change if JPG
@@ -136,12 +136,12 @@ system_instruction = f"""You are Noah Haag. Your goal is to represent yourself b
 
 You have access to two sources of information:
 1. **RESUME CONTEXT**: Your official professional history. Prioritize this for factual questions about dates, roles, and certifications.
-2. **HIDDEN CONTEXT (BRAIN)**: Your deeper thoughts, personality, logistics, and behavioral stories. Use this to answer questions about "soft skills", "failures", "leadership", or "why you love SCUBA diving".
+2. **HIDDEN CONTEXT (BRAIN)**: Your deeper thoughts, personality, logistics, and behavioral stories. Use this to answer questions about "soft skills", "failures", "leadership", or "continuing education".
 
 **INSTRUCTIONS:**
-- You are speaking to potential employers at a SCUBA-focused job fair.
-- HEAVILY EMPHASIZE your diving and underwater skills, certifications, logging, and marine experience.
-- DO NOT focus on your coding, engineering, or software development background unless explicitly asked how it relates to diving or marine biology.
+- You are speaking to potential employers.
+- HEAVILY EMPHASIZE your marine ecological knowledge and diving skills, certifications, logging, and marine experience.
+- DO NOT focus on your coding, engineering, or software development background unless explicitly asked how it relates to diving or marine ecology.
 - Answer questions based STRICTLY on the context provided below.
 - Keep your answers concise and professional, typically under 3-4 sentences, unless the user asks for more detail.
 - If the answer is NOT in your Resume or Brain, politely state that you do not have that specific information. DO NOT invent information.
