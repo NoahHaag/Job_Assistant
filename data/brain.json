@@ -21,9 +21,9 @@
         ]
     },
     "behavioral_stories": {
-             "leadership": {
-                   "prompt": "Tell me about a time you led a team.",
-                   "story": "STAR Method: While working as a Teaching Assistant for the Three Seas Program, I managed over 20 students in high-risk diving environments. I developed a new safety protocol (Action) that reduced equipment setup time by 30% and ensured zero safety incidents during the semester (Result)."
+        "leadership": {
+            "prompt": "Tell me about a time you led a team.",
+            "story": "STAR Method: While working as a Teaching Assistant for the Three Seas Program, I managed over 20 students in high-risk diving environments. I developed a new safety protocol (Action) that reduced equipment setup time by 30% and ensured zero safety incidents during the semester (Result)."
         },
         "technical_challenge": {
             "prompt": "Describe a difficult technical problem you solved.",
@@ -50,8 +50,8 @@
             "I taught myself Python initially to analyze marine ecological data better than Excel allowed."
         ]
     },
-    "SCUBA_experiance":{
-        "certifications":[
+    "SCUBA_experiance": {
+        "certifications": [
             "AAUS Scientific Diving",
             "Master Diver",
             "Nitrox",
@@ -64,60 +64,105 @@
             "deep water",
             "research dives"
         ],
-        "favorite_dive_sites": ["Looe Key National Marine Sanctuary, FL",
-        "Nahant, MA",
-        "Big Pine Key, FL"
-    ],
-    "dive_stories": [
-        {
-            "prompt": "Tell me about a time you had to deal with a difficult situation while diving.",
-            "story": "During a teaching dive in Nahant, MA, I encountered a difficult situation while diving. Some of the students had never dove in cold water before and they needed to get used to manuvering with a full 7mm wetsuit and heavy gear. I helped them get comfortable with the gear and the conditions in shallow water before we continued on to deeper water to complete the dive"
+        "favorite_dive_sites": [
+            "Looe Key National Marine Sanctuary, FL",
+            "Nahant, MA",
+            "Big Pine Key, FL"
+        ],
+        "dive_stories": [
+            {
+                "prompt": "Tell me about a time you had to deal with a difficult situation while diving.",
+                "story": "During a teaching dive in Nahant, MA, I encountered a difficult situation while diving. Some of the students had never dove in cold water before and they needed to get used to manuvering with a full 7mm wetsuit and heavy gear. I helped them get comfortable with the gear and the conditions in shallow water before we continued on to deeper water to complete the dive"
+            },
+            {
+                "prompt": "How do you handle diving with large apex predators or maintaining safety during tagging operations? (AWSC focus)",
+                "story": "I maintain strict situational awareness and adhere to established safety protocols. Safety during apex predator operations relies on clear communication with the surface, understanding animal behavior to avoid provoking defensive reactions, and ensuring all divers know emergency recall procedures. My experience includes maintaining focus in high-stress, low-visibility environments where close teamwork is essential."
+            },
+            {
+                "prompt": "Explain your understanding of AAUS dive planning and emergency management. (AAUS focus)",
+                "story": "As an AAUS Scientific Diver, my dive planning revolves around rigorous pre-dive safety checks, strict gas management, and preparing detailed Emergency Assistance Plans (EAPs) for remote locations. I am trained in oxygen administration and rescue techniques, ensuring that if an incident occurs, the team can respond methodically to stabilize the diver and coordinate with emergency services."
+            },
+            {
+                "prompt": "What is your experience with underwater survey methods and species identification in poor visibility? (MA DMF focus)",
+                "story": "I have extensive experience conducting underwater surveys, including transect and quadrat sampling, often in the challenging, low-visibility, and cold-water conditions typical of New England. I am adept at identifying local marine species under these conditions to ensure accurate data collection without compromising safety."
+            }
+        ],
+        "technical_knowledge": {
+            "survey_methods": [
+                "Transect surveys",
+                "Quadrat sampling",
+                "Visual census",
+                "Benthic mapping"
+            ],
+            "equipment_handling": [
+                "Lift bags",
+                "Underwater drill/hardware installation",
+                "Scientific sampling gear"
+            ],
+            "safety_protocols": [
+                "Emergency Oxygen Administration",
+                "Neurological Assessment",
+                "Diver rescue and extraction",
+                "Emergency Assistance Plan (EAP) creation"
+            ],
+            "regulations": [
+                "AAUS standards",
+                "Local marine sanctuary regulations"
+            ],
+            "species_identification": [
+                "I can identify many species from New England, Florida, and the Caribbean. Though Florida and the Caribbean are my strongest regions."
+            ]
         },
-        {
-            "prompt": "How do you handle diving with large apex predators or maintaining safety during tagging operations? (AWSC focus)",
-            "story": "I maintain strict situational awareness and adhere to established safety protocols. Safety during apex predator operations relies on clear communication with the surface, understanding animal behavior to avoid provoking defensive reactions, and ensuring all divers know emergency recall procedures. My experience includes maintaining focus in high-stress, low-visibility environments where close teamwork is essential."
+        "continued education": {
+            "certifications completed": [
+                "'Introduction to Coral Reef Management' from The Nature Conservancy",
+                "'Introduction to Coral Reef Restoration Planning' from The Nature Conservancy",
+                "'Coral Reef Restoration' from The Nature Conservancy and Reef Resilience Network",
+                "'Remote Sensing and Mapping for Coral Reef Conservation' from The Nature Conservancy, Reef Resilience Network and the University of Queensland"
+            ],
+            "certifications in progress": "Currently working on a certification from Google called 'Google Cloud Data Analytics'",
+            "Courses": "I am currently using Google Skills, NVDIA Deep Learning Institute, the Google Developer Program, and The Nature Conservancy: Conservation Learning",
+            "Google Skills public profile": "This is my public profile for Google Skills: https://www.skills.google/public_profiles/1387a9ea-61e0-4e8a-9f3b-1f838c96bdf4",
+            "Google Developer Program public profile": "This is my public profile for the Google Developer Program: https://me.developers.google.com/u/103435778384817801726"
         },
-        {
-            "prompt": "Explain your understanding of AAUS dive planning and emergency management. (AAUS focus)",
-            "story": "As an AAUS Scientific Diver, my dive planning revolves around rigorous pre-dive safety checks, strict gas management, and preparing detailed Emergency Assistance Plans (EAPs) for remote locations. I am trained in oxygen administration and rescue techniques, ensuring that if an incident occurs, the team can respond methodically to stabilize the diver and coordinate with emergency services."
-        },
-        {
-            "prompt": "What is your experience with underwater survey methods and species identification in poor visibility? (MA DMF focus)",
-            "story": "I have extensive experience conducting underwater surveys, including transect and quadrat sampling, often in the challenging, low-visibility, and cold-water conditions typical of New England. I am adept at identifying local marine species under these conditions to ensure accurate data collection without compromising safety."
-        }
-    ],
-    "technical_knowledge": {
-        "survey_methods": ["Transect surveys", "Quadrat sampling", "Visual census", "Benthic mapping"],
-        "equipment_handling": ["Lift bags", "Underwater drill/hardware installation", "Scientific sampling gear"],
-        "safety_protocols": ["Emergency Oxygen Administration", "Neurological Assessment", "Diver rescue and extraction", "Emergency Assistance Plan (EAP) creation"],
-        "regulations": ["AAUS standards","Local marine sanctuary regulations"],
-        "species_identification": [
-            "I can identify many species from New England, Florida, and the Caribbean. Though Florida and the Caribbean are my strongest regions."
-        ]
-    }
-    },
-    "continued education":{
-        "certifications": "Currently working on a certification from Google called 'Google Cloud Data Analytics', I am also working on a certification through The Nature Conservancy called 'Introduction to Coral Reef Management'.",
-        "Courses": "I am currently using Google Skills, NVDIA Deep Learning Institute, the Google Developer Program, and The Nature Conservancy: Conservation Learning",
-        "Google Skills public profile": "This is my public profile for Google Skills: https://www.skills.google/public_profiles/1387a9ea-61e0-4e8a-9f3b-1f838c96bdf4",
-        "Google Developer Program public profile" : "This is my public profile for the Google Developer Program: https://me.developers.google.com/u/103435778384817801726"
-    },
-    "artifacts": {
-        "agent_v2": {
-            "trigger_words": ["agent v2", "autonomous loop", "tool execution", "agent architecture", "gemini"],
-            "image_path": "public/agent_v2_visual.png",
-            "caption": "Architecture concept of my Agent V2, handling parallel tool execution.",
-            "link": "https://github.com/NoahHaag/Job_Assistant/blob/main/agent.py"
-        },
-        "meta_analysis_map": {
-            "trigger_words": ["gis", "spatial data", "locations", "global study", "arcgis", "map"],
-            "image_path": "public/study_map.png",
-            "caption": "Global distribution of studies synthesized in my meta-analysis (ArcGIS output)."
-        },
-        "reef_context": {
-            "trigger_words": ["artificial reef", "kimbro lab", "scuba", "fieldwork", "diving", "underwater", "environment"],
-            "image_path": "public/reef_context.png",
-            "caption": "The complex underwater environment of Artificial Reefs."
+        "artifacts": {
+            "agent_v2": {
+                "trigger_words": [
+                    "agent v2",
+                    "autonomous loop",
+                    "tool execution",
+                    "agent architecture",
+                    "gemini"
+                ],
+                "image_path": "public/agent_v2_visual.png",
+                "caption": "Architecture concept of my Agent V2, handling parallel tool execution.",
+                "link": "https://github.com/NoahHaag/Job_Assistant/blob/main/agent.py"
+            },
+            "meta_analysis_map": {
+                "trigger_words": [
+                    "gis",
+                    "spatial data",
+                    "locations",
+                    "global study",
+                    "arcgis",
+                    "map"
+                ],
+                "image_path": "public/study_map.png",
+                "caption": "Global distribution of studies synthesized in my meta-analysis (ArcGIS output)."
+            },
+            "reef_context": {
+                "trigger_words": [
+                    "artificial reef",
+                    "kimbro lab",
+                    "scuba",
+                    "fieldwork",
+                    "diving",
+                    "underwater",
+                    "environment"
+                ],
+                "image_path": "public/reef_context.png",
+                "caption": "The complex underwater environment of Artificial Reefs."
+            }
         }
     }
 }
